@@ -5,6 +5,7 @@ from fastapi import FastAPI, HTTPException
 from langchain_core.messages import HumanMessage
 from pydantic import BaseModel, Field, field_validator
 from requests import HTTPError, RequestException
+from fastapi.middleware.cors import CORSMiddleware
 
 from agent.graph import tafseer_agent
 from agent.nodes import ModelServiceError
@@ -13,6 +14,12 @@ from services.quran_service import Quran
 app = FastAPI(title="Chat with Tafseer")
 quran = Quran()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class ChatRequest(BaseModel):
     resource_id: int = Field(gt=0)
