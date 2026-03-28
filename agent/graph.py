@@ -1,57 +1,66 @@
-# agent/graph.py
-from langgraph.graph import StateGraph, END
-from langgraph.checkpoint.memory import MemorySaver
+from copy import deepcopy
+from threading import RLock
+
+from .nodes import generate_answer, load_tafseer_context
 from .state import AgentState
-from .nodes import extract_intent, fetch_tafseer, generate_answer, ask_for_chapter
 
 
-def route_after_intent(state: AgentState) -> str:
-    """
-    This is the 'traffic controller'. After extract_intent runs,
-    LangGraph calls this function and uses the return string to
-    decide which node runs next.
-    """
-    if not state.get("chapter_number"):
-        return "ask_for_chapter"    # couldn't figure out the surah
-    if state.get("needs_fetch"):
-        return "fetch_tafseer"      # new surah — go fetch it
-    return "generate_answer"        # same surah — use cached tafseer
+def _initial_state() -> AgentState:
+    return {
+        "messages": [],
+        "resource_id": None,
+        "verse_key": None,
+        "chapter_number": None,
+        "tafseer_text": None,
+    }
 
 
-def build_graph():
-    # ── 1. Create the graph with our state schema ──────────────────
-    graph = StateGraph(AgentState)
+class TafseerAgent:
+    def __init__(self):
+        self._lock = RLock()
+        self._sessions: dict[str, AgentState] = {}
 
-    # ── 2. Register all nodes ──────────────────────────────────────
-    graph.add_node("extract_intent",  extract_intent)
-    graph.add_node("fetch_tafseer",   fetch_tafseer)
-    graph.add_node("generate_answer", generate_answer)
-    graph.add_node("ask_for_chapter", ask_for_chapter)
+    def reset(self):
+        with self._lock:
+            self._sessions.clear()
 
-    # ── 3. Entry point ─────────────────────────────────────────────
-    graph.set_entry_point("extract_intent")
+    def invoke(self, payload: dict, config: dict | None = None) -> AgentState:
+        configurable = (config or {}).get("configurable", {})
+        thread_id = configurable.get("thread_id", "default")
+        resource_id = payload["resource_id"]
+        verse_key = payload["verse_key"]
+        incoming_messages = list(payload.get("messages", []))
 
-    # ── 4. Conditional edge: one node → multiple possible next nodes ──
-    graph.add_conditional_edges(
-        "extract_intent",       # FROM this node...
-        route_after_intent,     # ...call this router function...
-        {                       # ...map return values to node names
-            "ask_for_chapter": "ask_for_chapter",
-            "fetch_tafseer":   "fetch_tafseer",
-            "generate_answer": "generate_answer",
+        if not incoming_messages:
+            raise ValueError("Chat input requires at least one message")
+
+        with self._lock:
+            previous_state = deepcopy(self._sessions.get(thread_id, _initial_state()))
+
+        state = self._prepare_state(previous_state, resource_id, verse_key)
+
+        if not state.get("tafseer_text"):
+            state.update(load_tafseer_context(resource_id, verse_key))
+
+        state["messages"] = [*state["messages"], *incoming_messages]
+        state["messages"] = [*state["messages"], *generate_answer(state)["messages"]]
+
+        with self._lock:
+            self._sessions[thread_id] = deepcopy(state)
+
+        return deepcopy(state)
+
+    def _prepare_state(self, state: AgentState, resource_id: int, verse_key: str) -> AgentState:
+        if state.get("resource_id") == resource_id and state.get("verse_key") == verse_key:
+            return state
+
+        return {
+            "messages": [],
+            "resource_id": resource_id,
+            "verse_key": verse_key,
+            "chapter_number": None,
+            "tafseer_text": None,
         }
-    )
-
-    # ── 5. Simple edges: these always go to the same place ─────────
-    graph.add_edge("fetch_tafseer",   "generate_answer")  # after fetch → answer
-    graph.add_edge("generate_answer", END)
-    graph.add_edge("ask_for_chapter", END)
-
-    # ── 6. MemorySaver: persists state between API calls ───────────
-    #    Each conversation gets a unique thread_id — the checkpointer
-    #    saves/loads state automatically using it.
-    checkpointer = MemorySaver()
-    return graph.compile(checkpointer=checkpointer)
 
 
-tafseer_agent = build_graph()
+tafseer_agent = TafseerAgent()

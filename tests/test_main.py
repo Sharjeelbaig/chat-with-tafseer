@@ -4,13 +4,31 @@ from unittest.mock import Mock, patch
 import requests
 from fastapi.testclient import TestClient
 
+from agent.graph import tafseer_agent
 from main import app
 
 
-class GetTafseerTests(unittest.TestCase):
+def build_ayah_response(resource_id=169, verse_key="1:1", text="<p>Sample tafseer text</p>"):
+    return {
+        "tafsir": {
+            "resource_id": resource_id,
+            "resource_name": "Ibn Kathir (Abridged)",
+            "language_id": 38,
+            "slug": "en-tafisr-ibn-kathir",
+            "translated_name": {"name": "Ibn Kathir (Abridged)", "language_name": "english"},
+            "verses": {verse_key: {"id": 1}},
+            "text": text,
+        }
+    }
+
+
+class BaseEndpointTestCase(unittest.TestCase):
     def setUp(self):
+        tafseer_agent.reset()
         self.client = TestClient(app)
 
+
+class GetTafseerTests(BaseEndpointTestCase):
     @patch("services.quran_service.requests.get")
     def test_get_tafseer_success(self, mock_get):
         mock_response = Mock()
@@ -78,6 +96,154 @@ class GetTafseerTests(unittest.TestCase):
 
         self.assertEqual(response.status_code, 502)
         self.assertEqual(response.json()["detail"], "Internal upstream error")
+
+
+class ChatEndpointTests(BaseEndpointTestCase):
+    @patch("agent.nodes.invoke_llm")
+    @patch("agent.nodes.quran_service.get_tafseer_by_ayah")
+    def test_chat_success_returns_explicit_verse_response(self, mock_get_tafseer, mock_llm_invoke):
+        mock_get_tafseer.return_value = build_ayah_response(text="<p>Hello <strong>world</strong></p>")
+        mock_llm_invoke.return_value = Mock(content="It says hello world.")
+
+        response = self.client.post(
+            "/chat",
+            json={"resource_id": 169, "verse_key": "1:1", "message": "What does it say?", "thread_id": "chat-1"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "answer": "It says hello world.",
+                "resource_id": 169,
+                "verse_key": "1:1",
+                "chapter_number": 1,
+            },
+        )
+        mock_get_tafseer.assert_called_once_with(169, "1:1")
+
+    def test_chat_requires_explicit_resource_and_verse(self):
+        response = self.client.post("/chat", json={"message": "What does it say?"})
+
+        self.assertEqual(response.status_code, 422)
+
+    def test_chat_rejects_invalid_verse_key_format(self):
+        response = self.client.post(
+            "/chat",
+            json={"resource_id": 169, "verse_key": "invalid", "message": "What does it say?", "thread_id": "chat-2"},
+        )
+
+        self.assertEqual(response.status_code, 422)
+
+    @patch("agent.nodes.quran_service.get_tafseer_by_ayah")
+    def test_chat_surfaces_upstream_404(self, mock_get_tafseer):
+        mock_response = Mock(status_code=404)
+        mock_response.json.return_value = {"status": 404, "error": "Tafsir not found"}
+        mock_get_tafseer.side_effect = requests.HTTPError(response=mock_response)
+
+        response = self.client.post(
+            "/chat",
+            json={"resource_id": 169, "verse_key": "1:1", "message": "What does it say?", "thread_id": "chat-3"},
+        )
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()["detail"], "Tafsir not found")
+
+    @patch("agent.nodes.quran_service.get_tafseer_by_ayah")
+    def test_chat_surfaces_quran_transport_failure(self, mock_get_tafseer):
+        mock_get_tafseer.side_effect = requests.RequestException("connection failed")
+
+        response = self.client.post(
+            "/chat",
+            json={"resource_id": 169, "verse_key": "1:1", "message": "What does it say?", "thread_id": "chat-4"},
+        )
+
+        self.assertEqual(response.status_code, 502)
+        self.assertEqual(response.json()["detail"], "Failed to fetch tafseer data from upstream Quran API")
+
+    @patch("agent.nodes.invoke_llm")
+    @patch("agent.nodes.quran_service.get_tafseer_by_ayah")
+    def test_chat_surfaces_model_unavailable_as_503(self, mock_get_tafseer, mock_llm_invoke):
+        mock_get_tafseer.return_value = build_ayah_response()
+        mock_llm_invoke.side_effect = RuntimeError("model 'qwen2.5:3b' not found, try pulling it first")
+
+        response = self.client.post(
+            "/chat",
+            json={"resource_id": 169, "verse_key": "1:1", "message": "What does it say?", "thread_id": "chat-5"},
+        )
+
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.json()["detail"], "Configured Ollama model is unavailable")
+
+    @patch("agent.nodes.invoke_llm")
+    @patch("agent.nodes.quran_service.get_tafseer_by_ayah")
+    def test_same_thread_same_verse_reuses_cached_tafseer(self, mock_get_tafseer, mock_llm_invoke):
+        mock_get_tafseer.return_value = build_ayah_response(text="<p>Context one</p>")
+        mock_llm_invoke.side_effect = [Mock(content="Answer one"), Mock(content="Answer two")]
+
+        first = self.client.post(
+            "/chat",
+            json={"resource_id": 169, "verse_key": "1:1", "message": "What does it say?", "thread_id": "same-verse"},
+        )
+        second = self.client.post(
+            "/chat",
+            json={
+                "resource_id": 169,
+                "verse_key": "1:1",
+                "message": "Can you summarize that?",
+                "thread_id": "same-verse",
+            },
+        )
+
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 200)
+        self.assertEqual(mock_get_tafseer.call_count, 1)
+        self.assertEqual(mock_llm_invoke.call_count, 2)
+        second_call_messages = mock_llm_invoke.call_args_list[1].args[0]
+        self.assertEqual(len(second_call_messages), 4)
+
+    @patch("agent.nodes.invoke_llm")
+    @patch("agent.nodes.quran_service.get_tafseer_by_ayah")
+    def test_same_thread_different_verse_resets_context(self, mock_get_tafseer, mock_llm_invoke):
+        mock_get_tafseer.side_effect = [
+            build_ayah_response(verse_key="1:1", text="<p>First verse context</p>"),
+            build_ayah_response(verse_key="1:2", text="<p>Second verse context</p>"),
+        ]
+        mock_llm_invoke.side_effect = [Mock(content="Answer one"), Mock(content="Answer two")]
+
+        first = self.client.post(
+            "/chat",
+            json={"resource_id": 169, "verse_key": "1:1", "message": "What does it say?", "thread_id": "switch-verse"},
+        )
+        second = self.client.post(
+            "/chat",
+            json={"resource_id": 169, "verse_key": "1:2", "message": "And this verse?", "thread_id": "switch-verse"},
+        )
+
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 200)
+        self.assertEqual(mock_get_tafseer.call_count, 2)
+        second_call_messages = mock_llm_invoke.call_args_list[1].args[0]
+        self.assertEqual(len(second_call_messages), 2)
+        self.assertIn("Second verse context", second_call_messages[0].content)
+        self.assertNotIn("First verse context", second_call_messages[0].content)
+
+    @patch("agent.nodes.invoke_llm")
+    @patch("agent.nodes.quran_service.get_tafseer_by_ayah")
+    def test_chat_prompt_uses_cleaned_tafseer_text(self, mock_get_tafseer, mock_llm_invoke):
+        mock_get_tafseer.return_value = build_ayah_response(text="<h1>Title</h1><p>Hello <strong>world</strong></p>")
+        mock_llm_invoke.return_value = Mock(content="It says hello world.")
+
+        response = self.client.post(
+            "/chat",
+            json={"resource_id": 169, "verse_key": "1:1", "message": "What does it say?", "thread_id": "clean-text"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        system_message = mock_llm_invoke.call_args.args[0][0]
+        self.assertIn("Title Hello world", system_message.content)
+        self.assertNotIn("<h1>", system_message.content)
+        self.assertNotIn("<strong>", system_message.content)
 
 
 if __name__ == "__main__":
