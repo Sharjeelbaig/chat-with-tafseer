@@ -806,7 +806,7 @@ pre {
 }
 
 .shell-block pre {
-  white-space: pre;
+  white-space: pre-wrap;
 }
 
 .preview-header {
@@ -1525,9 +1525,10 @@ pre {
 
 @media (max-width: 760px) {
   .topbar {
-    min-height: 0;
-    padding: 14px 18px;
-    flex-wrap: wrap;
+    min-height: var(--appbar-height);
+    padding: 10px 14px;
+    flex-wrap: nowrap;
+    gap: 8px;
   }
 
   .topbar-divider,
@@ -1535,15 +1536,46 @@ pre {
     display: none;
   }
 
+  .logo-mark {
+    width: 30px;
+    height: 30px;
+  }
+
+  .brand {
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   .topbar-right {
-    width: 100%;
-    margin-left: 0;
-    justify-content: flex-start;
-    flex-wrap: wrap;
+    width: auto;
+    margin-left: auto;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    gap: 6px;
   }
 
   .theme-toggle {
-    order: -1;
+    padding: 6px;
+    gap: 0;
+  }
+
+  .theme-toggle [data-theme-label] {
+    display: none;
+  }
+
+  .topbar-link,
+  .button-link {
+    font-size: 0;
+    padding: 6px;
+    gap: 0;
+  }
+
+  .topbar-link svg,
+  .button-link svg {
+    width: 17px;
+    height: 17px;
   }
 
   .docs-panel,
@@ -1552,8 +1584,23 @@ pre {
   }
 
   .page-title {
-    font-size: 2.1rem;
-    line-height: 1.08;
+    font-size: 1.8rem;
+    line-height: 1.1;
+  }
+
+  .spotlight-card,
+  .info-card,
+  .rail-card,
+  .route-card,
+  .snippet-card,
+  .blueprint-card,
+  .stack-card {
+    padding: 16px;
+  }
+
+  .code-block,
+  .shell-block {
+    padding: 14px 16px;
   }
 
   .url-bar {
