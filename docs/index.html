@@ -31,10 +31,11 @@
     </svg>
   </button>
   <div class="logo-mark" aria-hidden="true">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-      <path d="M2 17l10 5 10-5"></path>
-      <path d="M2 12l10 5 10-5"></path>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+      <path d="M10 7l2 2 2-2"></path>
+      <path d="M10 11l2 2 2-2"></path>
     </svg>
   </div>
   <span class="brand">Chat with <span>Tafseer</span></span>
@@ -118,8 +119,8 @@
       <div class="sidebar-label">Resources</div>
       <a href="./resource_ids.html" class="sidebar-item">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path d="M12 1v22"></path>
-          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14.5a3.5 3.5 0 0 1 0 7H6"></path>
+          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
         </svg>
         Tafseer Resource IDs
       </a>
@@ -221,23 +222,50 @@
         </article>
       </div>
 
-      <div class="section-title">How It’s Built</div>
-      <div class="architecture-flow">
-        <div class="flow-item">
-          <strong>FastAPI entrypoint</strong>
-          <span><span class="inline-code">main.py</span> exposes the request contracts, validates inputs with Pydantic, and maps upstream/model failures to stable HTTP errors.</span>
+      <div class="section-title">How to Run Locally</div>
+      <div class="step-list">
+        <div class="step">
+          <div class="step-index">01</div>
+          <div class="step-copy">
+            <h3>Clone the repository</h3>
+            <p>Pull down the codebase from GitHub to your local machine.</p>
+            <div class="shell-block" style="margin-top: 14px; margin-bottom: 0;">
+              <pre>git clone https://github.com/Sharjeelbaig/chat-with-tafseer</pre>
+            </div>
+          </div>
         </div>
-        <div class="flow-item">
-          <strong>Quran context loader</strong>
-          <span><span class="inline-code">services/quran_service.py</span> calls Quran.com, supports chapter and ayah retrieval, and normalizes tafseer HTML into plain text for the model.</span>
+        <div class="step">
+          <div class="step-index">02</div>
+          <div class="step-copy">
+            <h3>Sync dependencies</h3>
+            <p>Install the required Python packages and setup the virtual environment.</p>
+            <div class="shell-block" style="margin-top: 14px; margin-bottom: 0;">
+              <pre>uv sync</pre>
+            </div>
+          </div>
         </div>
-        <div class="flow-item">
-          <strong>Thread-scoped agent state</strong>
-          <span><span class="inline-code">agent/graph.py</span> keeps lightweight in-memory sessions keyed by <span class="inline-code">thread_id</span> and resets them when the verse changes.</span>
+        <div class="step">
+          <div class="step-index">03</div>
+          <div class="step-copy">
+            <h3>Configure your environment</h3>
+            <p>Copy the example environment file and set your API keys.</p>
+            <div class="shell-block" style="margin-top: 14px; margin-bottom: 0;">
+              <pre>cp .env.example .env
+
+# Edit .env and set your keys:
+# OLLAMA_API_KEY="Super_Secret"</pre>
+            </div>
+          </div>
         </div>
-        <div class="flow-item">
-          <strong>Model invocation</strong>
-          <span><span class="inline-code">agent/nodes.py</span> builds the grounded prompt, keeps only recent messages, classifies model errors, and turns Ollama failures into user-facing 502 or 503 responses.</span>
+        <div class="step">
+          <div class="step-index">04</div>
+          <div class="step-copy">
+            <h3>Run the backend</h3>
+            <p>Start the development server using <span class="inline-code">uv</span>.</p>
+            <div class="shell-block" style="margin-top: 14px; margin-bottom: 0;">
+              <pre>uv run uvicorn main:app --reload</pre>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -295,6 +323,12 @@
           </div>
         </article>
       </div>
+      <nav class="docs-nav">
+        <a href="./tutorial_project.html" class="nav-btn next">
+          <span class="nav-label">Next</span>
+          <span class="nav-title">Tutorial Project</span>
+        </a>
+      </nav>
     </section>
 
     <aside class="right-rail">
