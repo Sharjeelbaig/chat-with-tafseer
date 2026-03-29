@@ -306,12 +306,31 @@ pre {
   justify-content: center;
 }
 
+.burger-menu {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--md-sys-color-outline);
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface-variant);
+  cursor: pointer;
+  transition: border-color 0.12s ease, color 0.12s ease;
+}
+
+.burger-menu:hover {
+  border-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-primary);
+}
+
 .layout {
   display: grid;
   grid-template-columns: 280px minmax(0, 1fr);
   align-items: start;
-  width: min(100%, var(--content-max-width));
-  margin: 0 auto;
+  width: 100%;
+  padding-left: max(0px, calc((100vw - var(--content-max-width)) / 2));
 }
 
 .sidebar {
@@ -322,7 +341,7 @@ pre {
   overflow-y: auto;
   border-right: 1px solid var(--md-sys-color-outline-variant);
   background: var(--md-sys-color-surface);
-  padding: 22px 16px 32px 0;
+  padding: 22px 0 32px 0;
 }
 
 .sidebar::-webkit-scrollbar,
@@ -338,9 +357,10 @@ pre {
   border-radius: var(--radius-sm);
 }
 
+/* CHANGED: reduced left padding from 20px → 8px */
 .sidebar-section {
   margin-bottom: 24px;
-  padding: 0 18px 0 20px;
+  padding: 0 12px 0 8px;
 }
 
 .sidebar-label {
@@ -352,12 +372,13 @@ pre {
   text-transform: uppercase;
 }
 
+/* CHANGED: reduced left padding from 12px → 8px */
 .sidebar-item {
   display: flex;
   align-items: center;
   gap: 10px;
   min-height: 42px;
-  padding: 10px 12px;
+  padding: 10px 8px;
   border-radius: var(--radius-sm);
   color: var(--md-sys-color-on-surface-variant);
   text-decoration: none;
@@ -406,17 +427,19 @@ pre {
   color: var(--blue-700);
 }
 
+/* CHANGED: left margin reduced from 20px → 8px to match section padding */
 .divider {
   height: 1px;
-  margin: 4px 20px 18px;
+  margin: 4px 12px 18px 8px;
   background: var(--md-sys-color-outline-variant);
 }
 
 .main {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) var(--rail-width);
+  grid-template-columns: minmax(0, calc(var(--reading-max-width) + 112px)) var(--rail-width);
   min-width: 0;
   align-items: start;
+  justify-content: start;
 }
 
 .docs-panel {
@@ -424,6 +447,7 @@ pre {
   flex-direction: column;
   align-items: center;
   min-width: 0;
+  max-width: calc(var(--reading-max-width) + 112px);
   padding: 42px 56px 88px;
   border-right: 1px solid var(--md-sys-color-outline-variant);
   background: var(--md-sys-color-surface);
@@ -437,15 +461,19 @@ pre {
   position: sticky;
   top: var(--sticky-offset);
   align-self: start;
-  width: var(--rail-width);
-  padding: 42px 24px 0 24px;
+  padding: 84px 24px 0 24px;
   background: var(--md-sys-color-surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .rail-stack {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  width: 100%;
+  max-width: var(--rail-width);
 }
 
 .page-intro {
@@ -1431,14 +1459,52 @@ pre {
   }
 
   .sidebar {
-    position: static;
-    top: auto;
-    max-height: none;
-    overflow: visible;
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid var(--gray-200);
+    position: fixed;
+    top: var(--appbar-height);
+    left: 0;
+    width: 280px;
+    height: calc(100vh - var(--appbar-height));
+    max-height: calc(100vh - var(--appbar-height));
+    overflow-y: auto;
+    background: var(--md-sys-color-surface);
+    border-right: 1px solid var(--md-sys-color-outline-variant);
+    border-bottom: none;
     padding: 16px 18px 20px;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 50;
+  }
+
+  body.sidebar-open .sidebar {
+    transform: translateX(0);
+  }
+
+  .mobile-overlay {
+    position: fixed;
+    inset: 0;
+    top: var(--appbar-height);
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    z-index: 45;
+  }
+
+  html[data-theme="dark"] .mobile-overlay {
+    background: rgba(0, 0, 0, 0.7);
+  }
+
+  body.sidebar-open {
+    overflow: hidden;
+  }
+
+  body.sidebar-open .mobile-overlay {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .burger-menu {
+    display: flex;
   }
 
   .sidebar-section {

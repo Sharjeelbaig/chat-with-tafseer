@@ -172,8 +172,31 @@
     });
   }
 
+  function attachMobileMenu() {
+    var overlay = document.createElement("div");
+    overlay.className = "mobile-overlay";
+    document.body.appendChild(overlay);
+
+    document.querySelectorAll("[data-menu-toggle]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        document.body.classList.toggle("sidebar-open");
+      });
+    });
+
+    overlay.addEventListener("click", function () {
+      document.body.classList.remove("sidebar-open");
+    });
+
+    document.querySelectorAll(".sidebar-item").forEach(function (item) {
+      item.addEventListener("click", function () {
+        document.body.classList.remove("sidebar-open");
+      });
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     attachThemeToggle();
+    attachMobileMenu();
     populateEndpointLinks();
     attachCopyButtons();
     attachLlmsPreview();
