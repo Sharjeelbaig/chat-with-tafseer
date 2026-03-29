@@ -3,8 +3,10 @@ from unittest.mock import Mock, patch
 
 import requests
 from fastapi.testclient import TestClient
+from langchain_core.messages import HumanMessage
 
-from agent.graph import tafseer_agent
+from agent.graph import SESSION_MESSAGE_LIMIT, tafseer_agent
+from agent.nodes import invoke_llm
 from main import app
 
 
@@ -245,7 +247,44 @@ class ChatEndpointTests(BaseEndpointTestCase):
         self.assertEqual(mock_get_tafseer.call_count, 1)
         self.assertEqual(mock_llm_invoke.call_count, 2)
         second_call_messages = mock_llm_invoke.call_args_list[1].args[0]
-        self.assertEqual(len(second_call_messages), 4)
+        self.assertEqual(len(second_call_messages), 2)
+        self.assertIn("User: What does it say?", second_call_messages[0].content)
+        self.assertIn("Assistant: Answer one", second_call_messages[0].content)
+        self.assertEqual(second_call_messages[1].content, "Can you summarize that?")
+
+    @patch("agent.nodes.invoke_llm")
+    @patch("agent.nodes.quran_service.get_tafseer_by_ayah")
+    def test_same_thread_follow_up_keeps_older_question_in_system_context(self, mock_get_tafseer, mock_llm_invoke):
+        mock_get_tafseer.return_value = build_ayah_response(text="<p>Context one</p>")
+        mock_llm_invoke.side_effect = [
+            Mock(content="Answer one"),
+            Mock(content="Answer two"),
+            Mock(content="Answer three"),
+            Mock(content="Answer four"),
+            Mock(content="Answer five"),
+        ]
+
+        responses = []
+        for message in [
+            "First question",
+            "Second question",
+            "Third question",
+            "Fourth question",
+            "What was my first question?",
+        ]:
+            responses.append(
+                self.client.post(
+                    "/chat",
+                    json={"resource_id": 169, "verse_key": "1:1", "message": message, "thread_id": "long-thread"},
+                )
+            )
+
+        self.assertTrue(all(response.status_code == 200 for response in responses))
+        fifth_call_messages = mock_llm_invoke.call_args_list[4].args[0]
+        self.assertEqual(len(fifth_call_messages), 2)
+        self.assertIn("User: First question", fifth_call_messages[0].content)
+        self.assertIn("Assistant: Answer four", fifth_call_messages[0].content)
+        self.assertEqual(fifth_call_messages[1].content, "What was my first question?")
 
     @patch("agent.nodes.invoke_llm")
     @patch("agent.nodes.quran_service.get_tafseer_by_ayah")
@@ -272,6 +311,27 @@ class ChatEndpointTests(BaseEndpointTestCase):
         self.assertEqual(len(second_call_messages), 2)
         self.assertIn("Second verse context", second_call_messages[0].content)
         self.assertNotIn("First verse context", second_call_messages[0].content)
+        self.assertNotIn("What does it say?", second_call_messages[0].content)
+
+    @patch("agent.nodes.invoke_llm")
+    @patch("agent.nodes.quran_service.get_tafseer_by_ayah")
+    def test_same_thread_session_history_is_pruned(self, mock_get_tafseer, mock_llm_invoke):
+        mock_get_tafseer.return_value = build_ayah_response(text="<p>Context one</p>")
+        mock_llm_invoke.side_effect = [Mock(content=f"Answer {index}") for index in range(1, 21)]
+
+        for index in range(1, 21):
+            response = self.client.post(
+                "/chat",
+                json={
+                    "resource_id": 169,
+                    "verse_key": "1:1",
+                    "message": f"Question {index}",
+                    "thread_id": "pruned-thread",
+                },
+            )
+            self.assertEqual(response.status_code, 200)
+
+        self.assertLessEqual(len(tafseer_agent._sessions["pruned-thread"]["messages"]), SESSION_MESSAGE_LIMIT)
 
     @patch("agent.nodes.invoke_llm")
     @patch("agent.nodes.quran_service.get_tafseer_by_ayah")
@@ -289,6 +349,17 @@ class ChatEndpointTests(BaseEndpointTestCase):
         self.assertIn("Title Hello world", system_message.content)
         self.assertNotIn("<h1>", system_message.content)
         self.assertNotIn("<strong>", system_message.content)
+
+
+class ModelInvocationTests(unittest.TestCase):
+    @patch("agent.nodes.llm")
+    def test_invoke_llm_retries_transient_bad_gateway(self, mock_llm):
+        mock_llm.invoke.side_effect = [RuntimeError("502 Bad Gateway"), Mock(content="Recovered answer")]
+
+        response = invoke_llm([HumanMessage(content="What does it say?")])
+
+        self.assertEqual(response.content, "Recovered answer")
+        self.assertEqual(mock_llm.invoke.call_count, 2)
 
 
 if __name__ == "__main__":

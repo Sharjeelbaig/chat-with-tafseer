@@ -4,6 +4,9 @@ from threading import RLock
 from .nodes import generate_answer, load_tafseer_context
 from .state import AgentState
 
+SESSION_TURN_LIMIT = 12
+SESSION_MESSAGE_LIMIT = SESSION_TURN_LIMIT * 2
+
 
 def _initial_state() -> AgentState:
     return {
@@ -44,6 +47,7 @@ class TafseerAgent:
 
         state["messages"] = [*state["messages"], *incoming_messages]
         state["messages"] = [*state["messages"], *generate_answer(state)["messages"]]
+        state["messages"] = self._prune_messages(state["messages"])
 
         with self._lock:
             self._sessions[thread_id] = deepcopy(state)
@@ -61,6 +65,12 @@ class TafseerAgent:
             "chapter_number": None,
             "tafseer_text": None,
         }
+
+    def _prune_messages(self, messages):
+        if len(messages) <= SESSION_MESSAGE_LIMIT:
+            return messages
+
+        return messages[-SESSION_MESSAGE_LIMIT:]
 
 
 tafseer_agent = TafseerAgent()
