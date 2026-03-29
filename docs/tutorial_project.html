@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<script>
+  (function () {
+    try {
+      var storedTheme = localStorage.getItem("docs-theme");
+      var theme = storedTheme;
+      if (!theme && window.matchMedia) {
+        theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      }
+      document.documentElement.setAttribute("data-theme", theme || "light");
+    } catch (error) {
+      document.documentElement.setAttribute("data-theme", "light");
+    }
+  })();
+</script>
+<title>Chat with Tafseer — Tutorial Project</title>
+<link rel="stylesheet" href="./assets/styles/docs.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="logo-mark" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+      <path d="M2 17l10 5 10-5"></path>
+      <path d="M2 12l10 5 10-5"></path>
+    </svg>
+  </div>
+  <span class="brand">Chat with <span>Tafseer</span></span>
+  <div class="topbar-divider"></div>
+  <span class="badge">API v1</span>
+
+  <nav class="topbar-right">
+    <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle dark theme">
+      <span class="theme-toggle-icon" data-theme-icon aria-hidden="true"></span>
+      <span data-theme-label>Dark theme</span>
+    </button>
+    <a href="https://github.com/Sharjeelbaig/chat-with-tafseer" class="topbar-link" target="_blank">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+      </svg>
+      GitHub
+    </a>
+    <a href="https://tadabbur-ai.pages.dev" class="button-link" target="_blank">
+      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path d="M5 12h14"></path>
+        <path d="M12 5l7 7-7 7"></path>
+      </svg>
+      View live project using this
+    </a>
+  </nav>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Getting Started</div>
+      <a href="./index.html" class="sidebar-item">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        Overview
+      </a>
+      <a href="./tutorial_project.html" class="sidebar-item active">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M12 20h9"></path>
+          <path d="M12 4h9"></path>
+          <path d="M4 9h16"></path>
+          <path d="M4 15h16"></path>
+        </svg>
+        Tutorial Project
+      </a>
+      <a href="./llm_txt.html" class="sidebar-item">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <path d="M14 2v6h6"></path>
+        </svg>
+        LLM.txt
+      </a>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Chat</div>
+      <a href="./send_message.html" class="sidebar-item">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        Send Message
+        <span class="method-pill post">POST</span>
+      </a>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Tafseer API</div>
+      <a href="./get_tafseer_by_chapter.html" class="sidebar-item">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+        Get Tafseer by Chapter
+        <span class="method-pill get">GET</span>
+      </a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <section class="docs-panel">
+      <div class="page-intro">
+        <div class="eyebrow">
+          <span class="dot"></span>
+          Tutorial Project
+        </div>
+        <h1 class="page-title">Build a React tafseer explainer app that feels real, not demo-shaped.</h1>
+        <p class="page-desc">
+          This walkthrough uses Quran.com as the reading source and this backend only for AI explanations. The user never types <span class="inline-code">verse_key</span> or <span class="inline-code">resource_id</span> by hand. Your app derives them from route state and verse interactions.
+        </p>
+      </div>
+
+      <div class="notice">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 8v4"></path>
+          <path d="M12 16h.01"></path>
+        </svg>
+        <p>This guide chooses one stack on purpose: <span class="inline-code">Vite + React + TypeScript + React Router + TanStack Query</span>. Real tutorials get simpler when they stop pretending every choice is interchangeable.</p>
+      </div>
+
+      <div class="section-title">What You’re Building</div>
+      <div class="card-grid">
+        <article class="info-card">
+          <h3>Route 1: Surah index</h3>
+          <div class="prose" style="margin-top:10px;">
+            <p>Fetch Quran.com chapters and render a navigable list so the user chooses a surah naturally instead of entering raw identifiers.</p>
+          </div>
+        </article>
+        <article class="info-card">
+          <h3>Route 2: Reader + explainer</h3>
+          <div class="prose" style="margin-top:10px;">
+            <p>Show Arabic ayat and translation on <span class="inline-code">/surah/:chapterNumber</span>. Each verse gets an “Explain” action that calls <span class="inline-code">POST /chat</span> in the background.</p>
+          </div>
+        </article>
+      </div>
+      <div class="card-grid" style="margin-top:18px;">
+        <article class="info-card">
+          <h3>Per-verse reply threads</h3>
+          <div class="prose" style="margin-top:10px;">
+            <p>Replies reuse a derived <span class="inline-code">thread_id</span> such as <span class="inline-code">tafseer:169:1:1</span> so each verse keeps its own short conversation.</p>
+          </div>
+        </article>
+        <article class="info-card">
+          <h3>Separation of concerns</h3>
+          <div class="prose" style="margin-top:10px;">
+            <p>Quran.com provides reading data. Your backend provides explanation. That split keeps the app honest and easier to reason about.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="section-title">1. Scaffold the App</div>
+      <div class="shell-block">
+        <div class="code-label"><span class="dot"></span> bootstrap</div>
+        <pre>npm create vite@latest tafseer-reader -- --template react-ts
+cd tafseer-reader
+npm install react-router-dom @tanstack/react-query</pre>
+      </div>
+
+      <div class="section-title">2. Add the Basic Structure</div>
+      <div class="code-block">
+        <div class="code-label"><span class="dot"></span> src tree</div>
+        <pre class="terminal-tree">src/
+  app/
+    router.tsx
+    providers.tsx
+  lib/
+    quran.ts
+    tafseer.ts
+    types.ts
+  routes/
+    surah-index.tsx
+    surah-reader.tsx
+  components/
+    surah-card.tsx
+    verse-card.tsx
+    explanation-thread.tsx
+  main.tsx</pre>
+      </div>
+
+      <div class="section-title">3. Create Your Data Clients</div>
+      <div class="step-list">
+        <div class="step">
+          <div class="step-index">A</div>
+          <div class="step-copy">
+            <h3>Quran.com client</h3>
+            <p>Use Quran.com for chapter lists, Arabic text, and translation. Translation resource <span class="inline-code">85</span> is a working English example for this tutorial.</p>
+            <div class="code-block" style="margin-top:12px;">
+              <div class="code-label"><span class="dot"></span> src/lib/quran.ts</div>
+              <pre>const QURAN_API_BASE = "https://api.quran.com/api/v4";
+
+export async function getChapters() {
+  const response = await fetch(`${QURAN_API_BASE}/chapters`);
+  if (!response.ok) throw new Error("Failed to load chapters");
+  const data = await response.json();
+  return data.chapters;
+}
+
+export async function getSurahReaderData(chapterNumber: number) {
+  const [versesResponse, translationResponse] = await Promise.all([
+    fetch(`${QURAN_API_BASE}/quran/verses/uthmani?chapter_number=${chapterNumber}`),
+    fetch(`${QURAN_API_BASE}/quran/translations/85?chapter_number=${chapterNumber}`),
+  ]);
+
+  if (!versesResponse.ok || !translationResponse.ok) {
+    throw new Error("Failed to load surah content");
+  }
+
+  const verses = (await versesResponse.json()).verses;
+  const translations = (await translationResponse.json()).translations;
+
+  return verses.map((verse: { verse_key: string; text_uthmani: string }, index: number) => ({
+    verseKey: verse.verse_key,
+    arabic: verse.text_uthmani,
+    translation: translations[index]?.text ?? "",
+  }));
+}</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-index">B</div>
+          <div class="step-copy">
+            <h3>Backend client</h3>
+            <p>The frontend never exposes raw verse fields to the user, but it still sends them internally to your backend.</p>
+            <div class="code-block" style="margin-top:12px;">
+              <div class="code-label"><span class="dot"></span> src/lib/tafseer.ts</div>
+              <pre>const TAFSEER_API_BASE =
+  import.meta.env.VITE_TAFSEER_API_BASE ?? "https://chat-with-tafseer.vercel.app";
+
+export type ChatRequest = {
+  resourceId: number;
+  verseKey: string;
+  message: string;
+  threadId: string;
+};
+
+export async function askTafseer(request: ChatRequest) {
+  const response = await fetch(`${TAFSEER_API_BASE}/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      resource_id: request.resourceId,
+      verse_key: request.verseKey,
+      message: request.message,
+      thread_id: request.threadId,
+    }),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail ?? "Failed to get tafseer explanation");
+  }
+  return data as {
+    answer: string;
+    resource_id: number;
+    verse_key: string;
+    chapter_number: number | null;
+  };
+}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">4. Configure Routing</div>
+      <div class="code-block">
+        <div class="code-label"><span class="dot"></span> src/app/router.tsx</div>
+        <pre>import { createBrowserRouter } from "react-router-dom";
+import { SurahIndexRoute } from "../routes/surah-index";
+import { SurahReaderRoute } from "../routes/surah-reader";
+
+export const router = createBrowserRouter([
+  { path: "/", element: &lt;SurahIndexRoute /&gt; },
+  { path: "/surah/:chapterNumber", element: &lt;SurahReaderRoute /&gt; },
+]);</pre>
+      </div>
+
+      <div class="section-title">5. Build the Surah Index</div>
+      <div class="code-block">
+        <div class="code-label"><span class="dot"></span> src/routes/surah-index.tsx</div>
+        <pre>import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getChapters } from "../lib/quran";
+
+export function SurahIndexRoute() {
+  const chaptersQuery = useQuery({
+    queryKey: ["chapters"],
+    queryFn: getChapters,
+  });
+
+  if (chaptersQuery.isPending) return &lt;p&gt;Loading surahs...&lt;/p&gt;;
+  if (chaptersQuery.isError) return &lt;p&gt;Unable to load chapters.&lt;/p&gt;;
+
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;Choose a Surah&lt;/h1&gt;
+      &lt;ul&gt;
+        {chaptersQuery.data.map((chapter: any) =&gt; (
+          &lt;li key={chapter.id}&gt;
+            &lt;Link to={`/surah/${chapter.id}`}&gt;
+              {chapter.id}. {chapter.name_simple}
+            &lt;/Link&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/main&gt;
+  );
+}</pre>
+      </div>
+
+      <div class="section-title">6. Build the Reader Route</div>
+      <div class="prose">
+        <p>The reader route should fetch verses, render Arabic plus translation, and attach one explanation thread per verse. The user reads first, then asks for help in place.</p>
+      </div>
+      <div class="code-block" style="margin-top:14px;">
+        <div class="code-label"><span class="dot"></span> src/routes/surah-reader.tsx</div>
+        <pre>import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getSurahReaderData } from "../lib/quran";
+import { askTafseer } from "../lib/tafseer";
+
+type ThreadMessage = { role: "user" | "assistant"; content: string };
+type ThreadState = Record&lt;string, ThreadMessage[]&gt;;
+
+const TAFSEER_RESOURCE_ID = 169;
+
+function threadIdForVerse(verseKey: string) {
+  return `tafseer:${TAFSEER_RESOURCE_ID}:${verseKey}`;
+}
+
+export function SurahReaderRoute() {
+  const { chapterNumber = "1" } = useParams();
+  const [threads, setThreads] = useState&lt;ThreadState&gt;({});
+  const [loadingVerse, setLoadingVerse] = useState&lt;string | null&gt;(null);
+
+  const surahQuery = useQuery({
+    queryKey: ["surah", chapterNumber],
+    queryFn: () =&gt; getSurahReaderData(Number(chapterNumber)),
+  });
+
+  async function submitForVerse(verseKey: string, message: string) {
+    const threadId = threadIdForVerse(verseKey);
+    setLoadingVerse(verseKey);
+    setThreads((current) =&gt; ({
+      ...current,
+      [verseKey]: [...(current[verseKey] ?? []), { role: "user", content: message }],
+    }));
+
+    try {
+      const result = await askTafseer({
+        resourceId: TAFSEER_RESOURCE_ID,
+        verseKey,
+        message,
+        threadId,
+      });
+
+      setThreads((current) =&gt; ({
+        ...current,
+        [verseKey]: [...(current[verseKey] ?? []), { role: "assistant", content: result.answer }],
+      }));
+    } finally {
+      setLoadingVerse(null);
+    }
+  }
+
+  if (surahQuery.isPending) return &lt;p&gt;Loading surah...&lt;/p&gt;;
+  if (surahQuery.isError) return &lt;p&gt;Unable to load this surah.&lt;/p&gt;;
+
+  return (
+    &lt;main&gt;
+      {surahQuery.data.map((verse) =&gt; (
+        &lt;section key={verse.verseKey}&gt;
+          &lt;p&gt;{verse.arabic}&lt;/p&gt;
+          &lt;p dangerouslySetInnerHTML={{ __html: verse.translation }} /&gt;
+          &lt;button onClick={() =&gt; submitForVerse(verse.verseKey, "Explain this verse briefly.")}&gt;
+            {loadingVerse === verse.verseKey ? "Explaining..." : "Explain"}
+          &lt;/button&gt;
+          &lt;ExplanationThread
+            verseKey={verse.verseKey}
+            messages={threads[verse.verseKey] ?? []}
+            onReply={submitForVerse}
+          /&gt;
+        &lt;/section&gt;
+      ))}
+    &lt;/main&gt;
+  );
+}</pre>
+      </div>
+
+      <div class="section-title">7. Add Replies to Each AI Explanation</div>
+      <div class="card-grid">
+        <article class="route-card">
+          <h3>Why replies belong to the verse card</h3>
+          <p>Each verse is its own context boundary. Putting the explanation thread directly under the verse keeps the user anchored to the ayah they are asking about.</p>
+          <ul class="check-list">
+            <li>Use the same <span class="inline-code">thread_id</span> for follow-up replies on the same verse.</li>
+            <li>Store the visible transcript in local component state or query cache.</li>
+            <li>Never reuse the same thread between different verses.</li>
+          </ul>
+        </article>
+        <article class="route-card">
+          <h3>Reply component sketch</h3>
+          <div class="code-block" style="margin-bottom:0;">
+            <div class="code-label"><span class="dot"></span> explanation-thread.tsx</div>
+            <pre>export function ExplanationThread({
+  verseKey,
+  messages,
+  onReply,
+}: {
+  verseKey: string;
+  messages: { role: "user" | "assistant"; content: string }[];
+  onReply: (verseKey: string, message: string) =&gt; Promise&lt;void&gt;;
+}) {
+  return (
+    &lt;div&gt;
+      {messages.map((message, index) =&gt; (
+        &lt;p key={`${verseKey}-${index}`}&gt;
+          &lt;strong&gt;{message.role === "assistant" ? "AI" : "You"}:&lt;/strong&gt; {message.content}
+        &lt;/p&gt;
+      ))}
+      &lt;button onClick={() =&gt; onReply(verseKey, "How does this connect to the next verse?")}&gt;
+        Reply
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</pre>
+          </div>
+        </article>
+      </div>
+
+      <div class="section-title">8. Handle Loading, Errors, and Restraint</div>
+      <div class="comparison-grid">
+        <article class="comparison-card good">
+          <h3>Do this</h3>
+          <ul class="check-list">
+            <li>Disable the explain button while a verse request is in flight.</li>
+            <li>Show a small error under the verse if the backend returns 404, 502, or 503.</li>
+            <li>Keep translation and tafseer clearly separated in the UI.</li>
+            <li>Prefill the first explain prompt with user-friendly language, not raw verse metadata.</li>
+          </ul>
+        </article>
+        <article class="comparison-card bad">
+          <h3>Avoid this</h3>
+          <ul class="check-list">
+            <li>Exposing a form where the user must type <span class="inline-code">resource_id</span> or <span class="inline-code">verse_key</span>.</li>
+            <li>Using one global thread for the entire surah reader.</li>
+            <li>Letting AI output replace the actual Quran text or translation in the reader.</li>
+            <li>Pretending the explanation is source text instead of model output grounded in tafseer.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="section-title">9. Local Run and Deploy Notes</div>
+      <div class="step-list">
+        <div class="step">
+          <div class="step-index">1</div>
+          <div class="step-copy">
+            <h3>Run the backend</h3>
+            <div class="shell-block" style="margin-top:10px;">
+              <div class="code-label"><span class="dot"></span> backend</div>
+              <pre>uv run uvicorn main:app --reload</pre>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-index">2</div>
+          <div class="step-copy">
+            <h3>Configure the React app</h3>
+            <p>When you are consuming the hosted backend, you can omit this env var entirely because the code snippet above already defaults to the deployed API. Set it only when you want your React app to talk to a local clone during backend development.</p>
+            <div class="shell-block" style="margin-top:10px;">
+              <div class="code-label"><span class="dot"></span> .env.local</div>
+              <pre>VITE_TAFSEER_API_BASE=http://127.0.0.1:8000</pre>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-index">3</div>
+          <div class="step-copy">
+            <h3>Deploy responsibly</h3>
+            <p>Host the React app wherever you like, but keep the backend URL configurable. The reader data can stay on Quran.com while your explanation calls go to your own deployed API.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="right-rail">
+      <div class="rail-stack">
+        <article class="rail-card">
+          <h3>Build Outline</h3>
+          <ul class="check-list" style="margin-top:10px;">
+            <li>Use Quran.com for reading data.</li>
+            <li>Use this backend only for explanation calls.</li>
+            <li>Key each thread by verse identity.</li>
+            <li>Keep AI output as a companion layer, not the reader itself.</li>
+          </ul>
+        </article>
+
+        <article class="rail-card">
+          <h3>Ship Checklist</h3>
+          <ul class="check-list" style="margin-top:10px;">
+            <li>Chapters page renders correctly.</li>
+            <li>Reader route loads Arabic plus translation.</li>
+            <li>Explain button calls <span class="inline-code">/chat</span>.</li>
+            <li>Replies stay inside the verse’s own thread.</li>
+            <li>Errors do not break the reader route.</li>
+          </ul>
+        </article>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<script src="./assets/scripts/docs.js"></script>
+</body>
+</html>

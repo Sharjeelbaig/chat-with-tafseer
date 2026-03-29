@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<script>
+  (function () {
+    try {
+      var storedTheme = localStorage.getItem("docs-theme");
+      var theme = storedTheme;
+      if (!theme && window.matchMedia) {
+        theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      }
+      document.documentElement.setAttribute("data-theme", theme || "light");
+    } catch (error) {
+      document.documentElement.setAttribute("data-theme", "light");
+    }
+  })();
+</script>
+<title>Chat with Tafseer — Overview</title>
+<link rel="stylesheet" href="./assets/styles/docs.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="logo-mark" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+      <path d="M2 17l10 5 10-5"></path>
+      <path d="M2 12l10 5 10-5"></path>
+    </svg>
+  </div>
+  <span class="brand">Chat with <span>Tafseer</span></span>
+  <div class="topbar-divider"></div>
+  <span class="badge">API v1</span>
+
+  <nav class="topbar-right">
+    <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle dark theme">
+      <span class="theme-toggle-icon" data-theme-icon aria-hidden="true"></span>
+      <span data-theme-label>Dark theme</span>
+    </button>
+    <a href="https://github.com/Sharjeelbaig/chat-with-tafseer" class="topbar-link" target="_blank">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+      </svg>
+      GitHub
+    </a>
+    <a href="https://tadabbur-ai.pages.dev" class="button-link" target="_blank">
+      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path d="M5 12h14"></path>
+        <path d="M12 5l7 7-7 7"></path>
+      </svg>
+      View live project using this
+    </a>
+  </nav>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Getting Started</div>
+      <a href="./index.html" class="sidebar-item active">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        Overview
+      </a>
+      <a href="./tutorial_project.html" class="sidebar-item">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M12 20h9"></path>
+          <path d="M12 4h9"></path>
+          <path d="M4 9h16"></path>
+          <path d="M4 15h16"></path>
+        </svg>
+        Tutorial Project
+      </a>
+      <a href="./llm_txt.html" class="sidebar-item">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <path d="M14 2v6h6"></path>
+        </svg>
+        LLM.txt
+      </a>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Chat</div>
+      <a href="./send_message.html" class="sidebar-item">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        Send Message
+        <span class="method-pill post">POST</span>
+      </a>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Tafseer API</div>
+      <a href="./get_tafseer_by_chapter.html" class="sidebar-item">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+        Get Tafseer by Chapter
+        <span class="method-pill get">GET</span>
+      </a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <section class="docs-panel">
+      <div class="page-intro">
+        <div class="eyebrow">
+          <span class="dot"></span>
+          Developer Toolkit
+        </div>
+        <h1 class="page-title">Build verse-grounded tafseer experiences with a small, honest backend.</h1>
+        <p class="page-desc">
+          Chat with Tafseer is a FastAPI service for two jobs: verse-scoped AI explanations through <span class="inline-code">POST /chat</span> and chapter-level tafseer retrieval through <span class="inline-code">GET /tafseer/{resource_id}/chapter/{chapter_number}</span>. It pulls classical commentary from Quran.com, shapes the context, and asks Ollama to answer only from that material.
+        </p>
+      </div>
+
+      <div class="hero-grid">
+        <article class="spotlight-card primary">
+          <h2>What this project is for</h2>
+          <div class="prose" style="margin-top:12px;">
+            <p>Use this backend when you want a client app to ask focused questions about a specific verse without making the user manually paste tafseer text or manage Quran data plumbing.</p>
+            <p>The current design is intentionally narrow. The API does not parse free-form surah requests, does not implement authentication, and does not pretend to be a general Islamic chatbot. It expects explicit verse context and stays there.</p>
+          </div>
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <strong>2</strong>
+              <span>Public endpoints documented and backed by tests</span>
+            </div>
+            <div class="kpi-card">
+              <strong>1</strong>
+              <span>Thread cache per verse so follow-up replies stay grounded</span>
+            </div>
+            <div class="kpi-card">
+              <strong>0</strong>
+              <span>Auth setup, SDK package claims, or hidden surface area</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="spotlight-card">
+          <h2>How clients should think about it</h2>
+          <div class="step-list" style="margin-top:16px;">
+            <div class="step">
+              <div class="step-index">01</div>
+              <div class="step-copy">
+                <h3>Resolve the verse</h3>
+                <p>Your client chooses the tafseer resource and computes the <span class="inline-code">verse_key</span>.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-index">02</div>
+              <div class="step-copy">
+                <h3>Call the backend</h3>
+                <p>Send <span class="inline-code">resource_id</span>, <span class="inline-code">verse_key</span>, a user question, and an optional <span class="inline-code">thread_id</span> to <span class="inline-code">/chat</span>.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-index">03</div>
+              <div class="step-copy">
+                <h3>Render the answer</h3>
+                <p>Display the response with the source verse and keep the same <span class="inline-code">thread_id</span> for follow-up replies on that verse.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="section-title">Ecosystem</div>
+      <div class="card-grid">
+        <article class="ecosystem-card">
+          <div class="brand-image-wrap">
+            <img class="brand-image" src="https://quran.com/images/logo/Logo@192x192.png" alt="Quran.com logo">
+          </div>
+          <div class="brand-copy">
+            <h3>Quran.com</h3>
+            <p>The backend uses Quran.com’s public API for tafseer by ayah and by chapter. The tutorial page also uses Quran.com directly for chapter lists, Arabic text, and translation data in the frontend reader experience.</p>
+          </div>
+        </article>
+        <article class="ecosystem-card">
+          <div class="brand-image-wrap">
+            <img class="brand-image" src="https://ollama.com/public/ollama.png" alt="Ollama logo">
+          </div>
+          <div class="brand-copy">
+            <h3>Ollama</h3>
+            <p>Ollama is the answer generator, not the source of truth. The service fetches tafseer first, strips HTML, truncates to a safe context window, and instructs the model to answer from that supplied commentary only.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="section-title">How It’s Built</div>
+      <div class="architecture-flow">
+        <div class="flow-item">
+          <strong>FastAPI entrypoint</strong>
+          <span><span class="inline-code">main.py</span> exposes the request contracts, validates inputs with Pydantic, and maps upstream/model failures to stable HTTP errors.</span>
+        </div>
+        <div class="flow-item">
+          <strong>Quran context loader</strong>
+          <span><span class="inline-code">services/quran_service.py</span> calls Quran.com, supports chapter and ayah retrieval, and normalizes tafseer HTML into plain text for the model.</span>
+        </div>
+        <div class="flow-item">
+          <strong>Thread-scoped agent state</strong>
+          <span><span class="inline-code">agent/graph.py</span> keeps lightweight in-memory sessions keyed by <span class="inline-code">thread_id</span> and resets them when the verse changes.</span>
+        </div>
+        <div class="flow-item">
+          <strong>Model invocation</strong>
+          <span><span class="inline-code">agent/nodes.py</span> builds the grounded prompt, keeps only recent messages, classifies model errors, and turns Ollama failures into user-facing 502 or 503 responses.</span>
+        </div>
+      </div>
+
+      <div class="section-title">What This Is and Is Not</div>
+      <div class="comparison-grid">
+        <article class="comparison-card good">
+          <h3>This is</h3>
+          <ul class="check-list">
+            <li>A backend API you can call from your own web or mobile app.</li>
+            <li>A developer toolkit for verse-scoped tafseer explanations backed by Quran.com and Ollama.</li>
+            <li>A clean starting point for building reader apps, study tools, or guided tafseer experiences.</li>
+          </ul>
+        </article>
+        <article class="comparison-card bad">
+          <h3>This is not</h3>
+          <ul class="check-list">
+            <li>A published JavaScript SDK with client packages and generated bindings.</li>
+            <li>An authentication platform, multi-tenant API gateway, or user account system.</li>
+            <li>A broad free-form question parser that guesses surahs or verses from arbitrary prose.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="section-title">Contribute</div>
+      <div class="split-grid">
+        <article class="blueprint-card">
+          <h3>Run the backend locally</h3>
+          <div class="shell-block" style="margin-bottom:0;">
+            <div class="code-label"><span class="dot"></span> development</div>
+            <pre>uv run uvicorn main:app --reload</pre>
+          </div>
+        </article>
+        <article class="blueprint-card">
+          <h3>Run the test suite</h3>
+          <div class="shell-block" style="margin-bottom:0;">
+            <div class="code-label"><span class="dot"></span> verification</div>
+            <pre>uv run python -m unittest discover -s tests -v</pre>
+          </div>
+        </article>
+      </div>
+
+      <div class="card-grid" style="margin-top:18px;">
+        <article class="info-card">
+          <h3>Repository</h3>
+          <div class="prose" style="margin-top:10px;">
+            <p>The source of truth for implementation details is the repository itself, especially <span class="inline-code">main.py</span>, <span class="inline-code">services/quran_service.py</span>, <span class="inline-code">services/ollama_service.py</span>, and the test suite.</p>
+            <p><a href="https://github.com/Sharjeelbaig/chat-with-tafseer" target="_blank">Open the project on GitHub</a>.</p>
+          </div>
+        </article>
+        <article class="info-card">
+          <h3>Docs location</h3>
+          <div class="prose" style="margin-top:10px;">
+            <p>The static site lives in <span class="inline-code">docs/</span>. This multipage shell is meant to be simple to extend without introducing a frontend build step just to document the backend.</p>
+            <p>Move next to the endpoint page if you want live request examples, or to the tutorial if you want a full React reference implementation.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <aside class="right-rail">
+      <div class="rail-stack">
+        <article class="rail-card">
+          <h3>Quick Start</h3>
+          <p>Use the docs in this order if you are new to the project.</p>
+          <div class="rail-links" style="margin-top:12px;">
+            <a href="./send_message.html" class="rail-link">
+              <div class="method-pill post">POST</div>
+              <div>
+                <strong>Send Message</strong>
+                <span>See the real request body, response contract, and live sandbox for <span class="inline-code">/chat</span>.</span>
+              </div>
+            </a>
+            <a href="./tutorial_project.html" class="rail-link">
+              <div class="mini-pill">Guide</div>
+              <div>
+                <strong>Tutorial Project</strong>
+                <span>Build a real React reader app that hides the backend details behind a good UX.</span>
+              </div>
+            </a>
+            <a href="./get_tafseer_by_chapter.html" class="rail-link">
+              <div class="method-pill get">GET</div>
+              <div>
+                <strong>Get Tafseer by Chapter</strong>
+                <span>Inspect raw chapter tafseer retrieval without any model layer.</span>
+              </div>
+            </a>
+          </div>
+        </article>
+
+        <article class="rail-card">
+          <h3>Architecture Snapshot</h3>
+          <div class="architecture-flow" style="margin-top:12px;">
+            <div class="flow-item">
+              <strong>Client</strong>
+              <span>Chooses a verse and sends a focused question.</span>
+            </div>
+            <div class="flow-item">
+              <strong>Backend</strong>
+              <span>Fetches tafseer, normalizes text, tracks thread state.</span>
+            </div>
+            <div class="flow-item">
+              <strong>Model</strong>
+              <span>Answers only from the supplied tafseer context.</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="rail-card">
+          <h3>Build With It</h3>
+          <p>The live project at <a href="https://tadabbur-ai.pages.dev" target="_blank">tadabbur-ai.pages.dev</a> is an example consumer of this backend pattern, not a duplicate of the docs site.</p>
+          <ul class="check-list" style="margin-top:10px;">
+            <li>Keep docs aligned with the real API contract.</li>
+            <li>Add more tested reader flows or tafseer resources.</li>
+            <li>Harden deployment and model-availability guidance.</li>
+          </ul>
+        </article>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<script src="./assets/scripts/docs.js"></script>
+</body>
+</html>

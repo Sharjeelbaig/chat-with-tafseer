@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<script>
+  (function () {
+    try {
+      var storedTheme = localStorage.getItem("docs-theme");
+      var theme = storedTheme;
+      if (!theme && window.matchMedia) {
+        theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      }
+      document.documentElement.setAttribute("data-theme", theme || "light");
+    } catch (error) {
+      document.documentElement.setAttribute("data-theme", "light");
+    }
+  })();
+</script>
+<title>Chat with Tafseer — Get Tafseer by Chapter</title>
+<link rel="stylesheet" href="./assets/styles/docs.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="logo-mark" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+      <path d="M2 17l10 5 10-5"></path>
+      <path d="M2 12l10 5 10-5"></path>
+    </svg>
+  </div>
+  <span class="brand">Chat with <span>Tafseer</span></span>
+  <div class="topbar-divider"></div>
+  <span class="badge">API v1</span>
+
+  <nav class="topbar-right">
+    <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle dark theme">
+      <span class="theme-toggle-icon" data-theme-icon aria-hidden="true"></span>
+      <span data-theme-label>Dark theme</span>
+    </button>
+    <a href="https://github.com/Sharjeelbaig/chat-with-tafseer" class="topbar-link" target="_blank">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+      </svg>
+      GitHub
+    </a>
+    <a href="https://tadabbur-ai.pages.dev" class="button-link" target="_blank">
+      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path d="M5 12h14"></path>
+        <path d="M12 5l7 7-7 7"></path>
+      </svg>
+      View live project using this
+    </a>
+  </nav>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Getting Started</div>
+      <a href="./index.html" class="sidebar-item">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        Overview
+      </a>
+      <a href="./tutorial_project.html" class="sidebar-item">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M12 20h9"></path>
+          <path d="M12 4h9"></path>
+          <path d="M4 9h16"></path>
+          <path d="M4 15h16"></path>
+        </svg>
+        Tutorial Project
+      </a>
+      <a href="./llm_txt.html" class="sidebar-item">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <path d="M14 2v6h6"></path>
+        </svg>
+        LLM.txt
+      </a>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Chat</div>
+      <a href="./send_message.html" class="sidebar-item">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        Send Message
+        <span class="method-pill post">POST</span>
+      </a>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Tafseer API</div>
+      <a href="./get_tafseer_by_chapter.html" class="sidebar-item active">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+        Get Tafseer by Chapter
+        <span class="method-pill get">GET</span>
+      </a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <section class="docs-panel">
+      <div class="page-intro">
+        <div class="eyebrow">
+          <span class="dot"></span>
+          Tafseer Retrieval
+        </div>
+        <h1 class="page-title">Fetch chapter tafseer directly when you do not need a model answer.</h1>
+        <p class="page-desc">
+          <span class="inline-code">GET /tafseer/{resource_id}/chapter/{chapter_number}</span> proxies chapter-level tafseer from Quran.com. It does not chat, does not maintain thread state, and does not call Ollama.
+        </p>
+      </div>
+
+      <div class="url-bar">
+        <span class="url-method get">GET</span>
+        <span class="url-path">/tafseer/{resource_id}/chapter/{chapter_number}</span>
+        <button class="copy-btn" id="copy-chapter-route-btn">Copy route</button>
+      </div>
+
+      <div class="notice">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 8v4"></path>
+          <path d="M12 16h.01"></path>
+        </svg>
+        <p>Choose this endpoint when you want source tafseer material by chapter. If you want a user-facing explanation for a single verse, use <span class="inline-code">POST /chat</span> instead.</p>
+      </div>
+
+      <div class="section-title">Path Parameters</div>
+      <div class="table-scroll">
+      <table class="param-table">
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="param-name">resource_id</span></td>
+            <td><span class="param-type">integer</span></td>
+            <td class="param-desc">The tafseer source to query, for example <span class="inline-code">169</span>.</td>
+          </tr>
+          <tr>
+            <td><span class="param-name">chapter_number</span></td>
+            <td><span class="param-type">integer</span></td>
+            <td class="param-desc">The surah number to fetch, from <span class="inline-code">1</span> through <span class="inline-code">114</span>.</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div class="section-title">Sample Response Shape</div>
+      <div class="code-block">
+        <div class="code-label"><span class="dot"></span> 200 OK</div>
+        <pre><span class="key">{</span>
+  <span class="key">"tafsirs"</span>: [
+    <span class="key">{</span>
+      <span class="key">"verse_key"</span>: <span class="str">"1:1"</span>,
+      <span class="key">"text"</span>: <span class="str">"&lt;p&gt;Chapter tafseer content...&lt;/p&gt;"</span>
+    <span class="key">}</span>
+  ]
+<span class="key">}</span></pre>
+      </div>
+
+      <div class="section-title">When to Use This Endpoint</div>
+      <div class="card-grid">
+        <article class="info-card">
+          <h3>Good fit</h3>
+          <ul class="check-list" style="margin-top:10px;">
+            <li>Indexing or storing source tafseer by chapter.</li>
+            <li>Manual reader or editor workflows.</li>
+            <li>Bulk chapter inspection without model generation.</li>
+          </ul>
+        </article>
+        <article class="info-card">
+          <h3>Wrong fit</h3>
+          <ul class="check-list" style="margin-top:10px;">
+            <li>Verse-level Q&amp;A with follow-up replies.</li>
+            <li>Any feature that needs thread continuity.</li>
+            <li>A frontend flow where the user expects a natural-language answer.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="section-title">Error Handling</div>
+      <div class="table-scroll">
+      <table class="param-table">
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>When it happens</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="param-name">404</span></td>
+            <td class="param-desc">The tafseer resource is missing or the chapter number is invalid upstream.</td>
+          </tr>
+          <tr>
+            <td><span class="param-name">502</span></td>
+            <td class="param-desc">Quran.com failed to respond successfully or the transport request failed.</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div class="section-title">Example cURL</div>
+      <div class="preview-block">
+        <div class="preview-header">
+          <span class="preview-label">cURL</span>
+          <button class="copy-icon-btn" id="copy-chapter-curl-btn">Copy</button>
+        </div>
+        <div class="preview-body">
+          <pre id="chapter-curl-preview"></pre>
+        </div>
+      </div>
+    </section>
+
+    <aside class="right-rail">
+      <div class="rail-stack">
+        <article class="sandbox-card">
+          <div class="sandbox-card-header">
+            <svg width="13" height="13" fill="none" stroke="var(--green-700)" stroke-width="2" viewBox="0 0 24 24">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+            <span class="sandbox-card-title">GET Sandbox</span>
+            <span class="status-ok" id="chapter-sandbox-status" style="margin-left:auto;"><span class="status-dot"></span>Ready</span>
+          </div>
+          <div class="sandbox-card-body">
+            <div class="small-note">This sandbox calls <span class="inline-code">https://chat-with-tafseer.vercel.app</span> by default. Append <span class="inline-code">?api_base=http://127.0.0.1:8000</span> only when you are testing a local clone of this backend.</div>
+
+            <div class="field-group">
+              <label class="field-label" for="chapter_resource_id">resource_id <span class="req">*</span></label>
+              <input class="field-input" id="chapter_resource_id" type="number" value="169" placeholder="169">
+            </div>
+
+            <div class="field-group">
+              <label class="field-label" for="chapter_number">chapter_number <span class="req">*</span></label>
+              <input class="field-input" id="chapter_number" type="number" value="1" placeholder="1">
+            </div>
+
+            <button class="send-btn" id="fetch-tafseer-btn">Fetch Tafseer</button>
+
+            <div class="preview-block" style="margin-top:4px;">
+              <div class="preview-header">
+                <span class="preview-label">Request URL</span>
+                <button class="copy-icon-btn" id="copy-chapter-url-btn">Copy</button>
+              </div>
+              <div class="preview-body">
+                <pre id="chapter-url-preview"></pre>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="sandbox-card">
+          <div class="preview-header">
+            <span class="preview-label">Response</span>
+            <button class="copy-icon-btn" id="copy-chapter-response-btn">Copy</button>
+          </div>
+          <div class="preview-body">
+            <pre id="chapter-response-preview"></pre>
+          </div>
+        </article>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<script src="./assets/scripts/docs.js"></script>
+<script src="./assets/scripts/get-tafseer.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var routeButton = document.getElementById("copy-chapter-route-btn");
+    routeButton.addEventListener("click", function () {
+      window.docsSite.copyText(
+        window.docsSite.buildApiUrl("/tafseer/{resource_id}/chapter/{chapter_number}"),
+        routeButton,
+        "Copied"
+      );
+    });
+  });
+</script>
+</body>
+</html>

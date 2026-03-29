@@ -1,0 +1,194 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - img [ref=e4]
+    - generic [ref=e8]: Chat with Tafseer
+    - navigation [ref=e9]:
+      - link "GitHub" [ref=e10] [cursor=pointer]:
+        - /url: https://github.com/Sharjeelbaig/chat-with-tafseer
+        - img [ref=e11]
+        - text: GitHub
+      - link "View live project using this" [ref=e13] [cursor=pointer]:
+        - /url: https://tadabbur-ai.pages.dev
+        - img [ref=e14]
+        - text: View live project using this
+  - generic [ref=e16]:
+    - complementary [ref=e17]:
+      - generic [ref=e18]:
+        - generic [ref=e19]: Getting Started
+        - link "Overview" [ref=e20] [cursor=pointer]:
+          - /url: ./index.html
+          - img [ref=e21]
+          - text: Overview
+        - link "Tutorial Project" [ref=e24] [cursor=pointer]:
+          - /url: ./tutorial_project.html
+          - img [ref=e25]
+          - text: Tutorial Project
+        - link "LLM.txt" [ref=e26] [cursor=pointer]:
+          - /url: ./llm_txt.html
+          - img [ref=e27]
+          - text: LLM.txt
+      - generic [ref=e31]:
+        - generic [ref=e32]: Chat
+        - link "Send Message POST" [ref=e33] [cursor=pointer]:
+          - /url: ./send_message.html
+          - img [ref=e34]
+          - text: Send Message
+          - generic [ref=e36]: POST
+      - generic [ref=e38]:
+        - generic [ref=e39]: Tafseer API
+        - link "Get Tafseer by Chapter GET" [ref=e40] [cursor=pointer]:
+          - /url: ./get_tafseer_by_chapter.html
+          - img [ref=e41]
+          - text: Get Tafseer by Chapter
+          - generic [ref=e44]: GET
+    - main [ref=e45]:
+      - generic [ref=e46]:
+        - generic [ref=e47]:
+          - generic [ref=e48]: Chat Endpoint
+          - heading "Send a verse-grounded tafseer message." [level=1] [ref=e50]
+          - paragraph [ref=e51]: POST /chat answers a user question using only the tafseer for the verse you specify. It is designed for explicit verse input, not free-form surah guessing.
+        - generic [ref=e52]:
+          - generic [ref=e53]: POST
+          - generic [ref=e54]: /chat
+          - button "Copy endpoint" [ref=e55] [cursor=pointer]
+        - generic [ref=e56]:
+          - img [ref=e57]
+          - paragraph [ref=e59]: No authentication is implemented in this repository. Send JSON directly. The backend will fetch tafseer from Quran.com using the supplied resource_id and verse_key, then send the cleaned context to Ollama.
+        - generic [ref=e60]: Request Body
+        - table [ref=e61]:
+          - rowgroup [ref=e62]:
+            - row "Parameter Type Description Required" [ref=e63]:
+              - columnheader "Parameter" [ref=e64]
+              - columnheader "Type" [ref=e65]
+              - columnheader "Description" [ref=e66]
+              - columnheader "Required" [ref=e67]
+          - rowgroup [ref=e68]:
+            - 'row "resource_id integer The tafseer source to use. Example: 169 for Ibn Kathir (Abridged). required" [ref=e69]':
+              - cell "resource_id" [ref=e70]
+              - cell "integer" [ref=e71]
+              - 'cell "The tafseer source to use. Example: 169 for Ibn Kathir (Abridged)." [ref=e72]'
+              - cell "required" [ref=e73]:
+                - generic [ref=e74]: required
+            - 'row "verse_key string Verse identity in chapter:verse format. Example: 1:1. required" [ref=e75]':
+              - cell "verse_key" [ref=e76]
+              - cell "string" [ref=e77]
+              - 'cell "Verse identity in chapter:verse format. Example: 1:1." [ref=e78]'
+              - cell "required" [ref=e79]:
+                - generic [ref=e80]: required
+            - row "message string The user’s question or follow-up message about that verse. required" [ref=e81]:
+              - cell "message" [ref=e82]
+              - cell "string" [ref=e83]
+              - cell "The user’s question or follow-up message about that verse." [ref=e84]
+              - cell "required" [ref=e85]:
+                - generic [ref=e86]: required
+            - row "thread_id string Optional session key for follow-up replies. Reuse it only for the same verse if you want context continuity. optional" [ref=e87]:
+              - cell "thread_id" [ref=e88]
+              - cell "string" [ref=e89]
+              - cell "Optional session key for follow-up replies. Reuse it only for the same verse if you want context continuity." [ref=e90]
+              - cell "optional" [ref=e91]:
+                - generic [ref=e92]: optional
+        - generic [ref=e93]: Successful Response
+        - generic [ref=e94]:
+          - generic [ref=e95]: 200 OK
+          - generic [ref=e97]: "{ \"answer\": \"According to the supplied tafseer context, the verse opens by praising Allah...\", \"resource_id\": 169, \"verse_key\": \"1:1\", \"chapter_number\": 1 }"
+        - generic [ref=e98]: Response Fields
+        - table [ref=e99]:
+          - rowgroup [ref=e100]:
+            - row "Field Type Description" [ref=e101]:
+              - columnheader "Field" [ref=e102]
+              - columnheader "Type" [ref=e103]
+              - columnheader "Description" [ref=e104]
+          - rowgroup [ref=e105]:
+            - row "answer string The model answer grounded in the fetched tafseer text." [ref=e106]:
+              - cell "answer" [ref=e107]
+              - cell "string" [ref=e108]
+              - cell "The model answer grounded in the fetched tafseer text." [ref=e109]
+            - row "resource_id integer Echoes the tafseer resource used for the response." [ref=e110]:
+              - cell "resource_id" [ref=e111]
+              - cell "integer" [ref=e112]
+              - cell "Echoes the tafseer resource used for the response." [ref=e113]
+            - row "verse_key string Echoes the resolved verse key used for context." [ref=e114]:
+              - cell "verse_key" [ref=e115]
+              - cell "string" [ref=e116]
+              - cell "Echoes the resolved verse key used for context." [ref=e117]
+            - row "chapter_number integer Derived from the verse key so clients can keep reader state aligned." [ref=e118]:
+              - cell "chapter_number" [ref=e119]
+              - cell "integer" [ref=e120]
+              - cell "Derived from the verse key so clients can keep reader state aligned." [ref=e121]
+        - generic [ref=e122]: Behavior Notes
+        - generic [ref=e123]:
+          - article [ref=e124]:
+            - heading "Explicit verse input only" [level=3] [ref=e125]
+            - paragraph [ref=e127]: The backend does not infer the verse from free-form user prose. Resolve the verse in your client and send resource_id plus verse_key explicitly.
+          - article [ref=e128]:
+            - heading "Thread reuse rules" [level=3] [ref=e129]
+            - paragraph [ref=e131]: Using the same thread_id on the same verse keeps recent chat history. Reusing that thread on a different verse resets the stored context to the new verse.
+        - generic [ref=e132]: Error Handling
+        - table [ref=e133]:
+          - rowgroup [ref=e134]:
+            - row "Status When it happens" [ref=e135]:
+              - columnheader "Status" [ref=e136]
+              - columnheader "When it happens" [ref=e137]
+          - rowgroup [ref=e138]:
+            - row "404 The Quran.com tafseer resource or verse does not exist for the request." [ref=e139]:
+              - cell "404" [ref=e140]
+              - cell "The Quran.com tafseer resource or verse does not exist for the request." [ref=e141]
+            - row "422 The body is invalid, for example a blank message or malformed verse_key." [ref=e142]:
+              - cell "422" [ref=e143]
+              - cell "The body is invalid, for example a blank message or malformed verse_key." [ref=e144]
+            - row "502 The upstream Quran API failed or the model returned an unexpected internal error." [ref=e145]:
+              - cell "502" [ref=e146]
+              - cell "The upstream Quran API failed or the model returned an unexpected internal error." [ref=e147]
+            - row "503 Ollama is unavailable or the configured model cannot be reached." [ref=e148]:
+              - cell "503" [ref=e149]
+              - cell "Ollama is unavailable or the configured model cannot be reached." [ref=e150]
+        - generic [ref=e151]: Example cURL
+        - generic [ref=e152]:
+          - generic [ref=e153]:
+            - generic [ref=e154]: cURL
+            - button "Copy" [ref=e155] [cursor=pointer]
+          - generic [ref=e157]: "curl -X POST http://127.0.0.1:8765/chat \\ -H \"Content-Type: application/json\" \\ -d '{ \"resource_id\": 169, \"verse_key\": \"1:1\", \"message\": \"What does it say?\", \"thread_id\": \"session-1\" }'"
+      - complementary [ref=e158]:
+        - generic [ref=e159]:
+          - article [ref=e160]:
+            - generic [ref=e161]:
+              - img [ref=e162]
+              - generic [ref=e164]: Sandbox
+              - generic [ref=e165]: Ready
+            - generic [ref=e167]:
+              - generic [ref=e168]: If these docs are hosted as a static site, add ?api_base=http://127.0.0.1:8000 to the URL when testing a local backend.
+              - generic [ref=e169]:
+                - generic [ref=e170]:
+                  - text: resource_id
+                  - generic [ref=e171]: "*"
+                - spinbutton "resource_id *" [ref=e172]: "169"
+              - generic [ref=e173]:
+                - generic [ref=e174]:
+                  - text: verse_key
+                  - generic [ref=e175]: "*"
+                - textbox "verse_key *" [ref=e176]:
+                  - /placeholder: 1:1
+                  - text: 1:1
+              - generic [ref=e177]:
+                - generic [ref=e178]:
+                  - text: message
+                  - generic [ref=e179]: "*"
+                - textbox "message *" [ref=e180]:
+                  - /placeholder: What does this verse say?
+                  - text: What does it say?
+              - generic [ref=e181]:
+                - generic [ref=e182]: thread_id
+                - textbox "thread_id" [ref=e183]:
+                  - /placeholder: session-1
+                  - text: session-1
+              - button "Send Request" [ref=e184] [cursor=pointer]
+              - generic [ref=e185]:
+                - generic [ref=e186]:
+                  - generic [ref=e187]: Request Body
+                  - button "Copy" [ref=e188] [cursor=pointer]
+                - generic [ref=e189]: "{ \"resource_id\": 169, \"verse_key\": \"1:1\", \"message\": \"What does it say?\", \"thread_id\": \"session-1\" }"
+          - article [ref=e190]:
+            - generic [ref=e191]:
+              - generic [ref=e192]: Response
+              - button "Copy" [ref=e193] [cursor=pointer]
+            - generic [ref=e195]: "{ \"answer\": \"Response preview appears here after you call /chat.\", \"resource_id\": 169, \"verse_key\": \"1:1\", \"chapter_number\": 1 }"

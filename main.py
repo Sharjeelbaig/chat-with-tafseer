@@ -1,11 +1,14 @@
 # main.py
 import re
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from langchain_core.messages import HumanMessage
 from pydantic import BaseModel, Field, field_validator
 from requests import HTTPError, RequestException
-from fastapi.middleware.cors import CORSMiddleware
 
 from agent.graph import tafseer_agent
 from agent.nodes import ModelServiceError
@@ -13,6 +16,18 @@ from services.quran_service import Quran
 
 app = FastAPI(title="Chat with Tafseer")
 quran = Quran()
+BASE_DIR = Path(__file__).resolve().parent
+DOCS_DIR = BASE_DIR / "docs"
+DOCS_PAGES = {
+    "index": DOCS_DIR / "index.html",
+    "tutorial_project": DOCS_DIR / "tutorial_project.html",
+    "llm_txt": DOCS_DIR / "llm_txt.html",
+    "send_message": DOCS_DIR / "send_message.html",
+    "get_tafseer_by_chapter": DOCS_DIR / "get_tafseer_by_chapter.html",
+}
+DOCS_TEXT_FILES = {
+    "llms.txt": DOCS_DIR / "llms.txt",
+}
 
 app.add_middleware(
     CORSMiddleware,
@@ -20,6 +35,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+if (DOCS_DIR / "assets").is_dir():
+    app.mount("/assets", StaticFiles(directory=DOCS_DIR / "assets"), name="docs-assets")
+
 
 class ChatRequest(BaseModel):
     resource_id: int = Field(gt=0)
@@ -49,6 +68,34 @@ class ChatResponse(BaseModel):
     resource_id: int
     verse_key: str
     chapter_number: int | None
+
+
+def _serve_file(path: Path, media_type: str | None = None) -> FileResponse:
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail="Documentation file not found")
+
+    if media_type is not None:
+        return FileResponse(path, media_type=media_type)
+
+    return FileResponse(path)
+
+
+@app.get("/", include_in_schema=False)
+def docs_overview():
+    return _serve_file(DOCS_PAGES["index"])
+
+
+@app.get("/{page_name}.html", include_in_schema=False)
+def docs_page(page_name: str):
+    page = DOCS_PAGES.get(page_name)
+    if page is None:
+        raise HTTPException(status_code=404, detail="Not Found")
+    return _serve_file(page)
+
+
+@app.get("/llms.txt", include_in_schema=False)
+def docs_llms_txt():
+    return _serve_file(DOCS_TEXT_FILES["llms.txt"], media_type="text/plain; charset=utf-8")
 
 
 def _get_upstream_error_detail(error: HTTPError) -> str:

@@ -1,0 +1,38 @@
+Chat with Tafseer
+
+Purpose
+- Provide verse-scoped tafseer explanations and chapter-level tafseer retrieval.
+- Use Quran.com as the upstream tafseer source.
+- Use Ollama only to answer from supplied tafseer context.
+
+Available endpoints
+1. POST /chat
+   - Required JSON fields: resource_id (int), verse_key (string chapter:verse), message (string)
+   - Optional JSON field: thread_id (string)
+   - Returns: answer, resource_id, verse_key, chapter_number
+   - Use this when an end user asks a question about a specific verse and you already know the verse.
+
+2. GET /tafseer/{resource_id}/chapter/{chapter_number}
+   - Returns raw chapter tafseer data from Quran.com.
+   - Use this when you need source tafseer content by chapter without chat or model generation.
+
+How to use /chat correctly
+- Resolve the verse in your client or workflow before calling the API.
+- Do not ask the backend to guess the verse from free-form user prose.
+- Reuse the same thread_id only for follow-up questions on the same verse.
+- If the verse changes, use a different thread_id.
+
+Thread behavior
+- Same thread_id + same verse keeps recent conversation history.
+- Same thread_id + different verse resets cached context to the new verse.
+
+Error behavior
+- 404: tafseer resource or verse not found upstream
+- 422: invalid request body
+- 502: upstream Quran API failure or generic model failure
+- 503: Ollama unavailable or configured model missing
+
+Current scope
+- No authentication
+- No free-form surah parsing
+- No published frontend SDK package

@@ -1,0 +1,175 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - img [ref=e4]
+    - generic [ref=e8]: Chat with Tafseer
+    - generic [ref=e10]: API v1
+    - navigation [ref=e11]:
+      - link "GitHub" [ref=e12] [cursor=pointer]:
+        - /url: https://github.com/Sharjeelbaig/chat-with-tafseer
+        - img [ref=e13]
+        - text: GitHub
+      - link "View live project using this" [ref=e15] [cursor=pointer]:
+        - /url: https://tadabbur-ai.pages.dev
+        - img [ref=e16]
+        - text: View live project using this
+  - generic [ref=e18]:
+    - complementary [ref=e19]:
+      - generic [ref=e20]:
+        - generic [ref=e21]: Getting Started
+        - link "Overview" [ref=e22] [cursor=pointer]:
+          - /url: ./index.html
+          - img [ref=e23]
+          - text: Overview
+        - link "Tutorial Project" [ref=e26] [cursor=pointer]:
+          - /url: ./tutorial_project.html
+          - img [ref=e27]
+          - text: Tutorial Project
+        - link "LLM.txt" [ref=e28] [cursor=pointer]:
+          - /url: ./llm_txt.html
+          - img [ref=e29]
+          - text: LLM.txt
+      - generic [ref=e33]:
+        - generic [ref=e34]: Chat
+        - link "Send Message POST" [ref=e35] [cursor=pointer]:
+          - /url: ./send_message.html
+          - img [ref=e36]
+          - text: Send Message
+          - generic [ref=e38]: POST
+      - generic [ref=e40]:
+        - generic [ref=e41]: Tafseer API
+        - link "Get Tafseer by Chapter GET" [ref=e42] [cursor=pointer]:
+          - /url: ./get_tafseer_by_chapter.html
+          - img [ref=e43]
+          - text: Get Tafseer by Chapter
+          - generic [ref=e46]: GET
+    - main [ref=e47]:
+      - generic [ref=e48]:
+        - generic [ref=e49]:
+          - generic [ref=e50]: Tutorial Project
+          - heading "Build a React tafseer explainer app that feels real, not demo-shaped." [level=1] [ref=e52]
+          - paragraph [ref=e53]: This walkthrough uses Quran.com as the reading source and this backend only for AI explanations. The user never types verse_key or resource_id by hand. Your app derives them from route state and verse interactions.
+        - generic [ref=e54]:
+          - img [ref=e55]
+          - paragraph [ref=e57]: "This guide chooses one stack on purpose: Vite + React + TypeScript + React Router + TanStack Query. Real tutorials get simpler when they stop pretending every choice is interchangeable."
+        - generic [ref=e58]: What You’re Building
+        - generic [ref=e59]:
+          - article [ref=e60]:
+            - 'heading "Route 1: Surah index" [level=3] [ref=e61]'
+            - paragraph [ref=e63]: Fetch Quran.com chapters and render a navigable list so the user chooses a surah naturally instead of entering raw identifiers.
+          - article [ref=e64]:
+            - 'heading "Route 2: Reader + explainer" [level=3] [ref=e65]'
+            - paragraph [ref=e67]: Show Arabic ayat and translation on /surah/:chapterNumber. Each verse gets an “Explain” action that calls POST /chat in the background.
+        - generic [ref=e68]:
+          - article [ref=e69]:
+            - heading "Per-verse reply threads" [level=3] [ref=e70]
+            - paragraph [ref=e72]: Replies reuse a derived thread_id such as tafseer:169:1:1 so each verse keeps its own short conversation.
+          - article [ref=e73]:
+            - heading "Separation of concerns" [level=3] [ref=e74]
+            - paragraph [ref=e76]: Quran.com provides reading data. Your backend provides explanation. That split keeps the app honest and easier to reason about.
+        - generic [ref=e77]: 1. Scaffold the App
+        - generic [ref=e78]:
+          - generic [ref=e79]: bootstrap
+          - generic [ref=e81]: npm create vite@latest tafseer-reader -- --template react-ts cd tafseer-reader npm install react-router-dom @tanstack/react-query
+        - generic [ref=e82]: 2. Add the Basic Structure
+        - generic [ref=e83]:
+          - generic [ref=e84]: src tree
+          - generic [ref=e86]: src/ app/ router.tsx providers.tsx lib/ quran.ts tafseer.ts types.ts routes/ surah-index.tsx surah-reader.tsx components/ surah-card.tsx verse-card.tsx explanation-thread.tsx main.tsx
+        - generic [ref=e87]: 3. Create Your Data Clients
+        - generic [ref=e88]:
+          - generic [ref=e89]:
+            - generic [ref=e90]: A
+            - generic [ref=e91]:
+              - heading "Quran.com client" [level=3] [ref=e92]
+              - paragraph [ref=e93]: Use Quran.com for chapter lists, Arabic text, and translation. Translation resource 85 is a working English example for this tutorial.
+              - generic [ref=e94]:
+                - generic [ref=e95]: src/lib/quran.ts
+                - generic [ref=e97]: "const QURAN_API_BASE = \"https://api.quran.com/api/v4\"; export async function getChapters() { const response = await fetch(`${QURAN_API_BASE}/chapters`); if (!response.ok) throw new Error(\"Failed to load chapters\"); const data = await response.json(); return data.chapters; } export async function getSurahReaderData(chapterNumber: number) { const [versesResponse, translationResponse] = await Promise.all([ fetch(`${QURAN_API_BASE}/quran/verses/uthmani?chapter_number=${chapterNumber}`), fetch(`${QURAN_API_BASE}/quran/translations/85?chapter_number=${chapterNumber}`), ]); if (!versesResponse.ok || !translationResponse.ok) { throw new Error(\"Failed to load surah content\"); } const verses = (await versesResponse.json()).verses; const translations = (await translationResponse.json()).translations; return verses.map((verse: { verse_key: string; text_uthmani: string }, index: number) => ({ verseKey: verse.verse_key, arabic: verse.text_uthmani, translation: translations[index]?.text ?? \"\", })); }"
+          - generic [ref=e98]:
+            - generic [ref=e99]: B
+            - generic [ref=e100]:
+              - heading "Backend client" [level=3] [ref=e101]
+              - paragraph [ref=e102]: The frontend never exposes raw verse fields to the user, but it still sends them internally to your backend.
+              - generic [ref=e103]:
+                - generic [ref=e104]: src/lib/tafseer.ts
+                - generic [ref=e106]: "const TAFSEER_API_BASE = import.meta.env.VITE_TAFSEER_API_BASE ?? \"http://127.0.0.1:8000\"; export type ChatRequest = { resourceId: number; verseKey: string; message: string; threadId: string; }; export async function askTafseer(request: ChatRequest) { const response = await fetch(`${TAFSEER_API_BASE}/chat`, { method: \"POST\", headers: { \"Content-Type\": \"application/json\" }, body: JSON.stringify({ resource_id: request.resourceId, verse_key: request.verseKey, message: request.message, thread_id: request.threadId, }), }); const data = await response.json(); if (!response.ok) { throw new Error(data.detail ?? \"Failed to get tafseer explanation\"); } return data as { answer: string; resource_id: number; verse_key: string; chapter_number: number | null; }; }"
+        - generic [ref=e107]: 4. Configure Routing
+        - generic [ref=e108]:
+          - generic [ref=e109]: src/app/router.tsx
+          - generic [ref=e111]: "import { createBrowserRouter } from \"react-router-dom\"; import { SurahIndexRoute } from \"../routes/surah-index\"; import { SurahReaderRoute } from \"../routes/surah-reader\"; export const router = createBrowserRouter([ { path: \"/\", element: <SurahIndexRoute /> }, { path: \"/surah/:chapterNumber\", element: <SurahReaderRoute /> }, ]);"
+        - generic [ref=e112]: 5. Build the Surah Index
+        - generic [ref=e113]:
+          - generic [ref=e114]: src/routes/surah-index.tsx
+          - generic [ref=e116]: "import { Link } from \"react-router-dom\"; import { useQuery } from \"@tanstack/react-query\"; import { getChapters } from \"../lib/quran\"; export function SurahIndexRoute() { const chaptersQuery = useQuery({ queryKey: [\"chapters\"], queryFn: getChapters, }); if (chaptersQuery.isPending) return <p>Loading surahs...</p>; if (chaptersQuery.isError) return <p>Unable to load chapters.</p>; return ( <main> <h1>Choose a Surah</h1> <ul> {chaptersQuery.data.map((chapter: any) => ( <li key={chapter.id}> <Link to={`/surah/${chapter.id}`}> {chapter.id}. {chapter.name_simple} </Link> </li> ))} </ul> </main> ); }"
+        - generic [ref=e117]: 6. Build the Reader Route
+        - paragraph [ref=e119]: The reader route should fetch verses, render Arabic plus translation, and attach one explanation thread per verse. The user reads first, then asks for help in place.
+        - generic [ref=e120]:
+          - generic [ref=e121]: src/routes/surah-reader.tsx
+          - generic [ref=e123]: "import { useState } from \"react\"; import { useParams } from \"react-router-dom\"; import { useQuery } from \"@tanstack/react-query\"; import { getSurahReaderData } from \"../lib/quran\"; import { askTafseer } from \"../lib/tafseer\"; type ThreadMessage = { role: \"user\" | \"assistant\"; content: string }; type ThreadState = Record<string, ThreadMessage[]>; const TAFSEER_RESOURCE_ID = 169; function threadIdForVerse(verseKey: string) { return `tafseer:${TAFSEER_RESOURCE_ID}:${verseKey}`; } export function SurahReaderRoute() { const { chapterNumber = \"1\" } = useParams(); const [threads, setThreads] = useState<ThreadState>({}); const [loadingVerse, setLoadingVerse] = useState<string | null>(null); const surahQuery = useQuery({ queryKey: [\"surah\", chapterNumber], queryFn: () => getSurahReaderData(Number(chapterNumber)), }); async function submitForVerse(verseKey: string, message: string) { const threadId = threadIdForVerse(verseKey); setLoadingVerse(verseKey); setThreads((current) => ({ ...current, [verseKey]: [...(current[verseKey] ?? []), { role: \"user\", content: message }], })); try { const result = await askTafseer({ resourceId: TAFSEER_RESOURCE_ID, verseKey, message, threadId, }); setThreads((current) => ({ ...current, [verseKey]: [...(current[verseKey] ?? []), { role: \"assistant\", content: result.answer }], })); } finally { setLoadingVerse(null); } } if (surahQuery.isPending) return <p>Loading surah...</p>; if (surahQuery.isError) return <p>Unable to load this surah.</p>; return ( <main> {surahQuery.data.map((verse) => ( <section key={verse.verseKey}> <p>{verse.arabic}</p> <p dangerouslySetInnerHTML={{ __html: verse.translation }} /> <button onClick={() => submitForVerse(verse.verseKey, \"Explain this verse briefly.\")}> {loadingVerse === verse.verseKey ? \"Explaining...\" : \"Explain\"} </button> <ExplanationThread verseKey={verse.verseKey} messages={threads[verse.verseKey] ?? []} onReply={submitForVerse} /> </section> ))} </main> ); }"
+        - generic [ref=e124]: 7. Add Replies to Each AI Explanation
+        - generic [ref=e125]:
+          - article [ref=e126]:
+            - heading "Why replies belong to the verse card" [level=3] [ref=e127]
+            - paragraph [ref=e128]: Each verse is its own context boundary. Putting the explanation thread directly under the verse keeps the user anchored to the ayah they are asking about.
+            - list [ref=e129]:
+              - listitem [ref=e130]: Use the same thread_id for follow-up replies on the same verse.
+              - listitem [ref=e131]: Store the visible transcript in local component state or query cache.
+              - listitem [ref=e132]: Never reuse the same thread between different verses.
+          - article [ref=e133]:
+            - heading "Reply component sketch" [level=3] [ref=e134]
+            - generic [ref=e135]:
+              - generic [ref=e136]: explanation-thread.tsx
+              - generic [ref=e138]: "export function ExplanationThread({ verseKey, messages, onReply, }: { verseKey: string; messages: { role: \"user\" | \"assistant\"; content: string }[]; onReply: (verseKey: string, message: string) => Promise<void>; }) { return ( <div> {messages.map((message, index) => ( <p key={`${verseKey}-${index}`}> <strong>{message.role === \"assistant\" ? \"AI\" : \"You\"}:</strong> {message.content} </p> ))} <button onClick={() => onReply(verseKey, \"How does this connect to the next verse?\")}> Reply </button> </div> ); }"
+        - generic [ref=e139]: 8. Handle Loading, Errors, and Restraint
+        - generic [ref=e140]:
+          - article [ref=e141]:
+            - heading "Do this" [level=3] [ref=e142]
+            - list [ref=e143]:
+              - listitem [ref=e144]: Disable the explain button while a verse request is in flight.
+              - listitem [ref=e145]: Show a small error under the verse if the backend returns 404, 502, or 503.
+              - listitem [ref=e146]: Keep translation and tafseer clearly separated in the UI.
+              - listitem [ref=e147]: Prefill the first explain prompt with user-friendly language, not raw verse metadata.
+          - article [ref=e148]:
+            - heading "Avoid this" [level=3] [ref=e149]
+            - list [ref=e150]:
+              - listitem [ref=e151]: Exposing a form where the user must type resource_id or verse_key.
+              - listitem [ref=e152]: Using one global thread for the entire surah reader.
+              - listitem [ref=e153]: Letting AI output replace the actual Quran text or translation in the reader.
+              - listitem [ref=e154]: Pretending the explanation is source text instead of model output grounded in tafseer.
+        - generic [ref=e155]: 9. Local Run and Deploy Notes
+        - generic [ref=e156]:
+          - generic [ref=e157]:
+            - generic [ref=e158]: "1"
+            - generic [ref=e159]:
+              - heading "Run the backend" [level=3] [ref=e160]
+              - generic [ref=e161]:
+                - generic [ref=e162]: backend
+                - generic [ref=e164]: uv run uvicorn main:app --reload
+          - generic [ref=e165]:
+            - generic [ref=e166]: "2"
+            - generic [ref=e167]:
+              - heading "Configure the React app" [level=3] [ref=e168]
+              - generic [ref=e169]:
+                - generic [ref=e170]: .env.local
+                - generic [ref=e172]: VITE_TAFSEER_API_BASE=http://127.0.0.1:8000
+          - generic [ref=e173]:
+            - generic [ref=e174]: "3"
+            - generic [ref=e175]:
+              - heading "Deploy responsibly" [level=3] [ref=e176]
+              - paragraph [ref=e177]: Host the React app wherever you like, but keep the backend URL configurable. The reader data can stay on Quran.com while your explanation calls go to your own deployed API.
+      - complementary [ref=e178]:
+        - generic [ref=e179]:
+          - article [ref=e180]:
+            - heading "Build Outline" [level=3] [ref=e181]
+            - list [ref=e182]:
+              - listitem [ref=e183]: Use Quran.com for reading data.
+              - listitem [ref=e184]: Use this backend only for explanation calls.
+              - listitem [ref=e185]: Key each thread by verse identity.
+              - listitem [ref=e186]: Keep AI output as a companion layer, not the reader itself.
+          - article [ref=e187]:
+            - heading "Ship Checklist" [level=3] [ref=e188]
+            - list [ref=e189]:
+              - listitem [ref=e190]: Chapters page renders correctly.
+              - listitem [ref=e191]: Reader route loads Arabic plus translation.
+              - listitem [ref=e192]: Explain button calls /chat.
+              - listitem [ref=e193]: Replies stay inside the verse’s own thread.
+              - listitem [ref=e194]: Errors do not break the reader route.

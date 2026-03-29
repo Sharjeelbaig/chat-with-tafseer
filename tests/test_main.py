@@ -98,6 +98,37 @@ class GetTafseerTests(BaseEndpointTestCase):
         self.assertEqual(response.json()["detail"], "Internal upstream error")
 
 
+class DocsRoutesTests(BaseEndpointTestCase):
+    def test_root_serves_docs_overview_html(self):
+        response = self.client.get("/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("text/html", response.headers["content-type"])
+        self.assertIn("Chat with Tafseer", response.text)
+        self.assertIn("Build verse-grounded tafseer experiences", response.text)
+
+    def test_send_message_page_serves_html(self):
+        response = self.client.get("/send_message.html")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("text/html", response.headers["content-type"])
+        self.assertIn("Send a verse-grounded tafseer message.", response.text)
+
+    def test_docs_stylesheet_is_served(self):
+        response = self.client.get("/assets/styles/docs.css")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("text/css", response.headers["content-type"])
+        self.assertIn("IBM Plex Sans", response.text)
+
+    def test_llms_txt_is_served(self):
+        response = self.client.get("/llms.txt")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("text/plain", response.headers["content-type"])
+        self.assertIn("POST /chat", response.text)
+
+
 class ChatEndpointTests(BaseEndpointTestCase):
     @patch("agent.nodes.invoke_llm")
     @patch("agent.nodes.quran_service.get_tafseer_by_ayah")

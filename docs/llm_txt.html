@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<script>
+  (function () {
+    try {
+      var storedTheme = localStorage.getItem("docs-theme");
+      var theme = storedTheme;
+      if (!theme && window.matchMedia) {
+        theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      }
+      document.documentElement.setAttribute("data-theme", theme || "light");
+    } catch (error) {
+      document.documentElement.setAttribute("data-theme", "light");
+    }
+  })();
+</script>
+<title>Chat with Tafseer — LLM.txt</title>
+<link rel="stylesheet" href="./assets/styles/docs.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="logo-mark" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+      <path d="M2 17l10 5 10-5"></path>
+      <path d="M2 12l10 5 10-5"></path>
+    </svg>
+  </div>
+  <span class="brand">Chat with <span>Tafseer</span></span>
+  <div class="topbar-divider"></div>
+  <span class="badge">API v1</span>
+
+  <nav class="topbar-right">
+    <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle dark theme">
+      <span class="theme-toggle-icon" data-theme-icon aria-hidden="true"></span>
+      <span data-theme-label>Dark theme</span>
+    </button>
+    <a href="https://github.com/Sharjeelbaig/chat-with-tafseer" class="topbar-link" target="_blank">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+      </svg>
+      GitHub
+    </a>
+    <a href="https://tadabbur-ai.pages.dev" class="button-link" target="_blank">
+      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path d="M5 12h14"></path>
+        <path d="M12 5l7 7-7 7"></path>
+      </svg>
+      View live project using this
+    </a>
+  </nav>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Getting Started</div>
+      <a href="./index.html" class="sidebar-item">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        Overview
+      </a>
+      <a href="./tutorial_project.html" class="sidebar-item">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M12 20h9"></path>
+          <path d="M12 4h9"></path>
+          <path d="M4 9h16"></path>
+          <path d="M4 15h16"></path>
+        </svg>
+        Tutorial Project
+      </a>
+      <a href="./llm_txt.html" class="sidebar-item active">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <path d="M14 2v6h6"></path>
+        </svg>
+        LLM.txt
+      </a>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Chat</div>
+      <a href="./send_message.html" class="sidebar-item">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        Send Message
+        <span class="method-pill post">POST</span>
+      </a>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Tafseer API</div>
+      <a href="./get_tafseer_by_chapter.html" class="sidebar-item">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+        Get Tafseer by Chapter
+        <span class="method-pill get">GET</span>
+      </a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <section class="docs-panel">
+      <div class="page-intro">
+        <div class="eyebrow">
+          <span class="dot"></span>
+          Agent Guide
+        </div>
+        <h1 class="page-title">Use this API in an LLM workflow without guessing what the backend does.</h1>
+        <p class="page-desc">
+          The backend is small enough that LLMs should follow strict rules: only call chat when the verse is explicit, only reuse threads on that same verse, and fall back to chapter retrieval when raw tafseer content is what you actually need.
+        </p>
+      </div>
+
+      <div class="section-title">When to Call Which Endpoint</div>
+      <div class="comparison-grid">
+        <article class="comparison-card good">
+          <h3>Use <span class="inline-code">POST /chat</span> when</h3>
+          <ul class="check-list">
+            <li>You know the target verse already.</li>
+            <li>The user wants an explanation, clarification, or follow-up question on that verse.</li>
+            <li>You want the backend to fetch tafseer context and ask the model for a grounded answer.</li>
+          </ul>
+        </article>
+        <article class="comparison-card good">
+          <h3>Use <span class="inline-code">GET /tafseer/{resource_id}/chapter/{chapter_number}</span> when</h3>
+          <ul class="check-list">
+            <li>You want raw chapter tafseer content.</li>
+            <li>You are doing indexing, browsing, or source inspection work.</li>
+            <li>You do not need a model answer at all.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="section-title">Operational Rules</div>
+      <div class="step-list">
+        <div class="step">
+          <div class="step-index">1</div>
+          <div class="step-copy">
+            <h3>Resolve the verse before calling chat</h3>
+            <p>The backend does not infer the verse from free-form user prose. Your agent or client must determine <span class="inline-code">resource_id</span> and <span class="inline-code">verse_key</span> first.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-index">2</div>
+          <div class="step-copy">
+            <h3>Keep thread scope narrow</h3>
+            <p>Reuse a <span class="inline-code">thread_id</span> only for follow-up questions on the same verse. If the verse changes, start a new thread.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-index">3</div>
+          <div class="step-copy">
+            <h3>Treat the answer as grounded model output</h3>
+            <p>The model answer is backed by tafseer context, but it is still model output. The raw source material remains Quran.com content accessed through the backend.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">Chat Contract</div>
+      <div class="table-scroll">
+      <table class="param-table">
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="param-name">resource_id</span></td>
+            <td><span class="param-type">integer</span></td>
+            <td class="param-desc">Tafseer source identifier, for example <span class="inline-code">169</span>.</td>
+          </tr>
+          <tr>
+            <td><span class="param-name">verse_key</span></td>
+            <td><span class="param-type">string</span></td>
+            <td class="param-desc">Verse reference in <span class="inline-code">chapter:verse</span> format, for example <span class="inline-code">1:1</span>.</td>
+          </tr>
+          <tr>
+            <td><span class="param-name">message</span></td>
+            <td><span class="param-type">string</span></td>
+            <td class="param-desc">The user question or follow-up prompt for the same verse.</td>
+          </tr>
+          <tr>
+            <td><span class="param-name">thread_id</span></td>
+            <td><span class="param-type">string</span></td>
+            <td class="param-desc">Optional conversation key used for recent-message continuity on that verse.</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div class="section-title">Recommended Agent Flow</div>
+      <div class="code-block">
+        <div class="code-label"><span class="dot"></span> workflow</div>
+        <pre>1. Resolve which verse the user is asking about.
+2. Choose the tafseer resource to use.
+3. Call POST /chat with resource_id, verse_key, message, and a verse-scoped thread_id.
+4. If the user asks a follow-up on the same verse, reuse the same thread_id.
+5. If the user switches verses, start a new thread_id.
+6. If raw source tafseer is needed, call GET /tafseer/{resource_id}/chapter/{chapter_number} instead.</pre>
+      </div>
+
+      <div class="section-title">Error Semantics</div>
+      <div class="table-scroll">
+      <table class="param-table">
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="param-name">404</span></td>
+            <td class="param-desc">The verse or tafseer resource could not be found in the upstream Quran API.</td>
+          </tr>
+          <tr>
+            <td><span class="param-name">422</span></td>
+            <td class="param-desc">The request body is invalid. Common causes are blank text or malformed <span class="inline-code">verse_key</span>.</td>
+          </tr>
+          <tr>
+            <td><span class="param-name">502</span></td>
+            <td class="param-desc">The upstream Quran API failed or the model layer returned a generic generation failure.</td>
+          </tr>
+          <tr>
+            <td><span class="param-name">503</span></td>
+            <td class="param-desc">Ollama is unavailable or the configured model cannot be found.</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <aside class="right-rail">
+      <div class="rail-stack">
+        <article class="sandbox-card">
+          <div class="preview-header">
+            <span class="preview-label">Raw llms.txt</span>
+            <div class="inline-actions" style="margin-left:auto;">
+              <button class="copy-icon-btn" data-copy-llms>Copy</button>
+              <a class="mini-action" href="./llms.txt" download>Download</a>
+            </div>
+          </div>
+          <div class="preview-body llms-preview">
+            <pre data-llms-preview>Loading llms.txt...</pre>
+          </div>
+        </article>
+
+        <article class="rail-card">
+          <h3>Agent Guardrails</h3>
+          <ul class="check-list" style="margin-top:10px;">
+            <li>No authentication layer exists.</li>
+            <li>No endpoint guesses the verse from natural language.</li>
+            <li>No published JS SDK exists in this repository.</li>
+            <li>No extra documented endpoints beyond chat and chapter tafseer retrieval.</li>
+          </ul>
+          <div class="code-block" style="margin:14px 0 0;">
+            <div class="code-label"><span class="dot"></span> example</div>
+            <pre>tafseer:169:1:1
+tafseer:169:1:2
+tafseer:169:18:110</pre>
+          </div>
+        </article>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<script src="./assets/scripts/docs.js"></script>
+</body>
+</html>
