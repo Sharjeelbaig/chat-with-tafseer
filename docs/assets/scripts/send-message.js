@@ -1,4 +1,37 @@
 (function () {
+  function randomDigits(length) {
+    var value = "";
+    for (var index = 0; index < length; index += 1) {
+      value += Math.floor(Math.random() * 10);
+    }
+    return value;
+  }
+
+  function randomLetters(length) {
+    var alphabet = "abcdefghijklmnopqrstuvwxyz";
+    var value = "";
+    for (var index = 0; index < length; index += 1) {
+      value += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+    }
+    return value;
+  }
+
+  function buildExampleThreadId() {
+    return (
+      "session-example-" +
+      randomDigits(4) +
+      "-" +
+      randomLetters(5) +
+      "-" +
+      randomDigits(4)
+    );
+  }
+
+  function getDefaultThreadId() {
+    var threadInput = document.getElementById("thread_id");
+    return threadInput.getAttribute("data-default-thread-id") || threadInput.placeholder;
+  }
+
   function escapeHtml(value) {
     return String(value)
       .replace(/&/g, "&amp;")
@@ -25,7 +58,7 @@
       resource_id: Number.isFinite(resourceId) && resourceId > 0 ? resourceId : 169,
       verse_key: verseKey || "1:1",
       message: message || "What does it say?",
-      thread_id: threadId || "session-1",
+      thread_id: threadId || getDefaultThreadId(),
     };
   }
 
@@ -94,6 +127,13 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
+    var threadInput = document.getElementById("thread_id");
+    var defaultThreadId = buildExampleThreadId();
+
+    threadInput.value = defaultThreadId;
+    threadInput.placeholder = defaultThreadId;
+    threadInput.setAttribute("data-default-thread-id", defaultThreadId);
+
     ["resource_id", "verse_key", "message", "thread_id"].forEach(function (id) {
       document.getElementById(id).addEventListener("input", updateBodyPreview);
     });
