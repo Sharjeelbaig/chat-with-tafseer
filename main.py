@@ -18,13 +18,6 @@ app = FastAPI(title="Chat with Tafseer")
 quran = Quran()
 BASE_DIR = Path(__file__).resolve().parent
 DOCS_DIR = BASE_DIR / "docs"
-DOCS_PAGES = {
-    "index": DOCS_DIR / "index.html",
-    "tutorial_project": DOCS_DIR / "tutorial_project.html",
-    "llm_txt": DOCS_DIR / "llm_txt.html",
-    "send_message": DOCS_DIR / "send_message.html",
-    "get_tafseer_by_chapter": DOCS_DIR / "get_tafseer_by_chapter.html",
-}
 DOCS_TEXT_FILES = {
     "llms.txt": DOCS_DIR / "llms.txt",
 }
@@ -82,15 +75,14 @@ def _serve_file(path: Path, media_type: str | None = None) -> FileResponse:
 
 @app.get("/", include_in_schema=False)
 def docs_overview():
-    return _serve_file(DOCS_PAGES["index"])
+    return _serve_file(DOCS_DIR / "index.html")
 
 
 @app.get("/{page_name}.html", include_in_schema=False)
 def docs_page(page_name: str):
-    page = DOCS_PAGES.get(page_name)
-    if page is None:
+    if not re.fullmatch(r"[a-z0-9_]+", page_name):
         raise HTTPException(status_code=404, detail="Not Found")
-    return _serve_file(page)
+    return _serve_file(DOCS_DIR / f"{page_name}.html")
 
 
 @app.get("/llms.txt", include_in_schema=False)

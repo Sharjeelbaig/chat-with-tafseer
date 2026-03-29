@@ -114,6 +114,20 @@ class DocsRoutesTests(BaseEndpointTestCase):
         self.assertIn("text/html", response.headers["content-type"])
         self.assertIn("Send a verse-grounded tafseer message.", response.text)
 
+    def test_resource_ids_page_serves_html(self):
+        response = self.client.get("/resource_ids.html")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("text/html", response.headers["content-type"])
+        self.assertIn("Tafseer Resource IDs", response.text)
+
+    def test_verse_keys_page_serves_html(self):
+        response = self.client.get("/verse_keys.html")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("text/html", response.headers["content-type"])
+        self.assertIn("Verse Key Guide", response.text)
+
     def test_docs_stylesheet_is_served(self):
         response = self.client.get("/assets/styles/docs.css")
 

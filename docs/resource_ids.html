@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<script>
+  (function () {
+    try {
+      var storedTheme = localStorage.getItem("docs-theme");
+      var theme = storedTheme;
+      if (!theme && window.matchMedia) {
+        theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      }
+      document.documentElement.setAttribute("data-theme", theme || "light");
+    } catch (error) {
+      document.documentElement.setAttribute("data-theme", "light");
+    }
+  })();
+</script>
+<title>Chat with Tafseer — Tafseer Resource IDs</title>
+<link rel="stylesheet" href="./assets/styles/docs.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="logo-mark" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+      <path d="M2 17l10 5 10-5"></path>
+      <path d="M2 12l10 5 10-5"></path>
+    </svg>
+  </div>
+  <span class="brand">Chat with <span>Tafseer</span></span>
+  <div class="topbar-divider"></div>
+  <span class="badge">API v1</span>
+
+  <nav class="topbar-right">
+    <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle dark theme">
+      <span class="theme-toggle-icon" data-theme-icon aria-hidden="true"></span>
+      <span data-theme-label>Dark theme</span>
+    </button>
+    <a href="https://github.com/Sharjeelbaig/chat-with-tafseer" class="topbar-link" target="_blank">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+      </svg>
+      GitHub
+    </a>
+    <a href="https://tadabbur-ai.pages.dev" class="button-link" target="_blank">
+      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path d="M5 12h14"></path>
+        <path d="M12 5l7 7-7 7"></path>
+      </svg>
+      View live project using this
+    </a>
+  </nav>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Getting Started</div>
+      <a href="./index.html" class="sidebar-item">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        Overview
+      </a>
+      <a href="./tutorial_project.html" class="sidebar-item">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M12 20h9"></path>
+          <path d="M12 4h9"></path>
+          <path d="M4 9h16"></path>
+          <path d="M4 15h16"></path>
+        </svg>
+        Tutorial Project
+      </a>
+      <a href="./llm_txt.html" class="sidebar-item">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <path d="M14 2v6h6"></path>
+        </svg>
+        LLM.txt
+      </a>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Endpoints</div>
+      <a href="./send_message.html" class="sidebar-item">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        Send Message
+        <span class="method-pill post">POST</span>
+      </a>
+      <a href="./get_tafseer_by_chapter.html" class="sidebar-item">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+        Get Tafseer by Chapter
+        <span class="method-pill get">GET</span>
+      </a>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Resources</div>
+      <a href="./resource_ids.html" class="sidebar-item active">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M12 1v22"></path>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14.5a3.5 3.5 0 0 1 0 7H6"></path>
+        </svg>
+        Tafseer Resource IDs
+      </a>
+      <a href="./verse_keys.html" class="sidebar-item">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M4 7h16"></path>
+          <path d="M7 4v16"></path>
+          <path d="M17 11l3 3-3 3"></path>
+          <path d="M13 14h7"></path>
+        </svg>
+        Verse Key Guide
+      </a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <section class="docs-panel">
+      <div class="page-intro">
+        <div class="eyebrow">
+          <span class="dot"></span>
+          Reference Data
+        </div>
+        <h1 class="page-title">Pick the right tafseer <span class="inline-code">resource_id</span> before you call the API.</h1>
+        <p class="page-desc">
+          Both <span class="inline-code">POST /chat</span> and <span class="inline-code">GET /tafseer/{resource_id}/chapter/{chapter_number}</span> depend on a Quran.com tafseer resource id. The official source of truth is Quran.com's public tafseer resource list endpoint.
+        </p>
+      </div>
+
+      <div class="notice">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 8v4"></path>
+          <path d="M12 16h.01"></path>
+        </svg>
+        <p>The examples in this docs set default to <span class="inline-code">169</span>, which Quran.com currently maps to <span class="inline-code">Ibn Kathir (Abridged)</span>. The list below reflects the official endpoint fetched on March 29, 2026.</p>
+      </div>
+
+      <div class="preview-block" style="margin-bottom:24px;">
+        <div class="preview-header">
+          <span class="preview-label">Official Quran.com Endpoint</span>
+          <button class="copy-icon-btn" data-copy-value="https://api.quran.com/api/v4/resources/tafsirs" data-copy-label="Copied">Copy</button>
+        </div>
+        <div class="preview-body">
+          <pre>https://api.quran.com/api/v4/resources/tafsirs</pre>
+        </div>
+      </div>
+
+      <div class="section-title">Most Common Picks</div>
+      <div class="card-grid">
+        <article class="info-card">
+          <h3>169</h3>
+          <div class="prose" style="margin-top:10px;">
+            <p><strong>Ibn Kathir (Abridged)</strong> by Hafiz Ibn Kathir. This is the English tafseer used in the docs examples and the safest default if you want an English explanation flow.</p>
+          </div>
+        </article>
+        <article class="info-card">
+          <h3>168</h3>
+          <div class="prose" style="margin-top:10px;">
+            <p><strong>Ma'arif al-Qur'an</strong> by Mufti Muhammad Shafi. Also English and useful when you want a different English commentary source than the default examples.</p>
+          </div>
+        </article>
+        <article class="info-card">
+          <h3>817</h3>
+          <div class="prose" style="margin-top:10px;">
+            <p><strong>Tazkirul Quran</strong> by Maulana Wahid Uddin Khan. English resource available from the same official Quran.com list.</p>
+          </div>
+        </article>
+        <article class="info-card">
+          <h3>Language-specific options</h3>
+          <div class="prose" style="margin-top:10px;">
+            <p>Quran.com also exposes Arabic, Bengali, Urdu, Russian, and Kurdish tafseer resources. Use the language column below instead of assuming every id is English.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="section-title">How This API Uses resource_id</div>
+      <div class="step-list">
+        <div class="step">
+          <div class="step-index">1</div>
+          <div class="step-copy">
+            <h3>Choose a Quran.com tafseer source</h3>
+            <p>Look up the id from Quran.com's official resource list. Your app should store or configure the id it wants instead of hard-coding a guessed value.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-index">2</div>
+          <div class="step-copy">
+            <h3>Send the id to this backend</h3>
+            <p>For verse explanations, include it in the JSON body for <span class="inline-code">POST /chat</span>. For raw chapter tafseer, place it in the route for <span class="inline-code">GET /tafseer/{resource_id}/chapter/{chapter_number}</span>.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-index">3</div>
+          <div class="step-copy">
+            <h3>Do not invent ids</h3>
+            <p>If you need a different tafseer source later, re-check Quran.com's current list endpoint. This backend does not maintain a separate resource catalog.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">Current Quran.com Tafseer Resources</div>
+      <div class="table-scroll">
+        <table class="param-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Author</th>
+              <th>Language</th>
+              <th>Slug</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="param-name">169</span></td><td class="param-desc">Ibn Kathir (Abridged)</td><td class="param-desc">Hafiz Ibn Kathir</td><td class="param-desc">english</td><td><span class="param-type">en-tafisr-ibn-kathir</span></td></tr>
+            <tr><td><span class="param-name">381</span></td><td class="param-desc">Tafsir Fathul Majid</td><td class="param-desc">AbdulRahman Bin Hasan Al-Alshaikh</td><td class="param-desc">bengali</td><td><span class="param-type">tafisr-fathul-majid-bn</span></td></tr>
+            <tr><td><span class="param-name">16</span></td><td class="param-desc">Tafsir Muyassar</td><td class="param-desc">المیسر</td><td class="param-desc">arabic</td><td><span class="param-type">ar-tafsir-muyassar</span></td></tr>
+            <tr><td><span class="param-name">165</span></td><td class="param-desc">Tafsir Ahsanul Bayaan</td><td class="param-desc">Bayaan Foundation</td><td class="param-desc">bengali</td><td><span class="param-type">bn-tafsir-ahsanul-bayaan</span></td></tr>
+            <tr><td><span class="param-name">166</span></td><td class="param-desc">Tafsir Abu Bakr Zakaria</td><td class="param-desc">King Fahd Quran Printing Complex</td><td class="param-desc">bengali</td><td><span class="param-type">bn-tafsir-abu-bakr-zakaria</span></td></tr>
+            <tr><td><span class="param-name">93</span></td><td class="param-desc">Al-Tafsir al-Wasit (Tantawi)</td><td class="param-desc">Waseet</td><td class="param-desc">arabic</td><td><span class="param-type">ar-tafsir-al-wasit</span></td></tr>
+            <tr><td><span class="param-name">14</span></td><td class="param-desc">Tafsir Ibn Kathir</td><td class="param-desc">Hafiz Ibn Kathir</td><td class="param-desc">arabic</td><td><span class="param-type">ar-tafsir-ibn-kathir</span></td></tr>
+            <tr><td><span class="param-name">15</span></td><td class="param-desc">Tafsir al-Tabari</td><td class="param-desc">Tabari</td><td class="param-desc">arabic</td><td><span class="param-type">ar-tafsir-al-tabari</span></td></tr>
+            <tr><td><span class="param-name">164</span></td><td class="param-desc">Tafseer ibn Kathir</td><td class="param-desc">Tawheed Publication</td><td class="param-desc">bengali</td><td><span class="param-type">bn-tafseer-ibn-e-kaseer</span></td></tr>
+            <tr><td><span class="param-name">90</span></td><td class="param-desc">Al-Qurtubi</td><td class="param-desc">Qurtubi</td><td class="param-desc">arabic</td><td><span class="param-type">ar-tafseer-al-qurtubi</span></td></tr>
+            <tr><td><span class="param-name">168</span></td><td class="param-desc">Ma'arif al-Qur'an</td><td class="param-desc">Mufti Muhammad Shafi</td><td class="param-desc">english</td><td><span class="param-type">en-tafsir-maarif-ul-quran</span></td></tr>
+            <tr><td><span class="param-name">91</span></td><td class="param-desc">السعدي Al-Sa'di</td><td class="param-desc">Saddi</td><td class="param-desc">arabic</td><td><span class="param-type">ar-tafseer-al-saddi</span></td></tr>
+            <tr><td><span class="param-name">170</span></td><td class="param-desc">Al-Sa'di</td><td class="param-desc">Saddi</td><td class="param-desc">russian</td><td><span class="param-type">ru-tafseer-al-saddi</span></td></tr>
+            <tr><td><span class="param-name">94</span></td><td class="param-desc">Tafseer Al-Baghawi</td><td class="param-desc">Baghawy</td><td class="param-desc">arabic</td><td><span class="param-type">ar-tafsir-al-baghawi</span></td></tr>
+            <tr><td><span class="param-name">157</span></td><td class="param-desc">Fi Zilal al-Quran</td><td class="param-desc">Sayyid Ibrahim Qutb</td><td class="param-desc">urdu</td><td><span class="param-type">tafsir-fe-zalul-quran-syed-qatab</span></td></tr>
+            <tr><td><span class="param-name">804</span></td><td class="param-desc">Rebar Kurdish Tafsir</td><td class="param-desc">Rebar Kurdish Tafsir</td><td class="param-desc">Kurdish</td><td><span class="param-type">kurd-tafsir-rebar</span></td></tr>
+            <tr><td><span class="param-name">817</span></td><td class="param-desc">Tazkirul Quran</td><td class="param-desc">Maulana Wahid Uddin Khan</td><td class="param-desc">english</td><td><span class="param-type">tazkirul-quran-en</span></td></tr>
+            <tr><td><span class="param-name">160</span></td><td class="param-desc">Tafsir Ibn Kathir</td><td class="param-desc">Hafiz Ibn Kathir</td><td class="param-desc">urdu</td><td><span class="param-type">tafseer-ibn-e-kaseer-urdu</span></td></tr>
+            <tr><td><span class="param-name">818</span></td><td class="param-desc">Tazkir ul Quran</td><td class="param-desc">Maulana Wahid Uddin Khan</td><td class="param-desc">urdu</td><td><span class="param-type">tazkiru-quran-ur</span></td></tr>
+            <tr><td><span class="param-name">159</span></td><td class="param-desc">Bayan ul Quran</td><td class="param-desc">Dr. Israr Ahmad</td><td class="param-desc">urdu</td><td><span class="param-type">tafsir-bayan-ul-quran</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <aside class="right-rail">
+      <div class="rail-stack">
+        <article class="rail-card">
+          <h3>Most Used in These Docs</h3>
+          <ul class="check-list" style="margin-top:10px;">
+            <li><span class="inline-code">169</span> for English Ibn Kathir (Abridged).</li>
+            <li><span class="inline-code">168</span> for English Ma'arif al-Qur'an.</li>
+            <li><span class="inline-code">817</span> for Tazkirul Quran in English.</li>
+          </ul>
+        </article>
+
+        <article class="rail-card">
+          <h3>Official Quran.com Links</h3>
+          <div class="rail-links" style="margin-top:8px;">
+            <a class="rail-link" href="https://api.quran.com/api/v4/resources/tafsirs" target="_blank">
+              <div>
+                <strong>/resources/tafsirs</strong>
+                <span>Current resource_id list directly from Quran.com.</span>
+              </div>
+            </a>
+            <a class="rail-link" href="https://api-docs.quran.com/docs/category/content-apis-4.0.0/" target="_blank">
+              <div>
+                <strong>Quran API docs</strong>
+                <span>Official documentation portal for the content APIs.</span>
+              </div>
+            </a>
+          </div>
+        </article>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<script src="./assets/scripts/docs.js"></script>
+</body>
+</html>
