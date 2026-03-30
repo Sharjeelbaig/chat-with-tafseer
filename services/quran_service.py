@@ -30,6 +30,15 @@ class Quran:
         response.raise_for_status()
         return response.json()
 
+    def get_chapters(self):
+        response = requests.get(
+            f"{self.base_url}/chapters",
+            params={},
+            timeout=REQUEST_TIMEOUT_SECONDS,
+        )
+        response.raise_for_status()
+        return response.json()
+
     def normalize_tafseer_text(self, text):
         text = re.sub(r"<[^>]+>", " ", text or "")
         return re.sub(r"\s+", " ", text).strip()

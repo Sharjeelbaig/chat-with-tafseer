@@ -63,6 +63,13 @@ class ChatResponse(BaseModel):
     chapter_number: int | None
 
 
+class SurahResponse(BaseModel):
+    number: int
+    name_arabic: str
+    name_english: str
+    ayahs: int
+
+
 def _serve_file(path: Path, media_type: str | None = None) -> FileResponse:
     if not path.is_file():
         raise HTTPException(status_code=404, detail="Documentation file not found")
@@ -88,6 +95,29 @@ def docs_page(page_name: str):
 @app.get("/llms.txt", include_in_schema=False)
 def docs_llms_txt():
     return _serve_file(DOCS_TEXT_FILES["llms.txt"], media_type="text/plain; charset=utf-8")
+
+
+@app.get("/surahs", response_model=list[SurahResponse])
+def list_surahs():
+    try:
+        data = quran.get_chapters()
+        return [
+            SurahResponse(
+                number=chapter["id"],
+                name_arabic=chapter["name_arabic"],
+                name_english=chapter["name_simple"],
+                ayahs=chapter["verses_count"],
+            )
+            for chapter in data["chapters"]
+        ]
+    except HTTPError as error:
+        status_code = error.response.status_code if error.response is not None else None
+        detail = _get_upstream_error_detail(error)
+        if status_code == 404:
+            raise HTTPException(status_code=404, detail=detail) from error
+        raise HTTPException(status_code=502, detail=detail) from error
+    except RequestException as error:
+        raise HTTPException(status_code=502, detail="Failed to fetch surah list from upstream Quran API") from error
 
 
 def _get_upstream_error_detail(error: HTTPError) -> str:
