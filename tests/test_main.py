@@ -362,5 +362,82 @@ class ModelInvocationTests(unittest.TestCase):
         self.assertEqual(mock_llm.invoke.call_count, 2)
 
 
+class ListSurahsTests(BaseEndpointTestCase):
+    def _build_chapters_response(self):
+        return {
+            "chapters": [
+                {
+                    "id": 1,
+                    "name_arabic": "الفاتحة",
+                    "name_simple": "Al-Fatihah",
+                    "verses_count": 7,
+                },
+                {
+                    "id": 2,
+                    "name_arabic": "البقرة",
+                    "name_simple": "Al-Baqarah",
+                    "verses_count": 286,
+                },
+            ]
+        }
+
+    @patch("services.quran_service.requests.get")
+    def test_list_surahs_returns_all_fields(self, mock_get):
+        mock_response = Mock()
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.return_value = self._build_chapters_response()
+        mock_get.return_value = mock_response
+
+        response = self.client.get("/surahs")
+
+        self.assertEqual(response.status_code, 200)
+        surahs = response.json()
+        self.assertEqual(len(surahs), 2)
+        self.assertEqual(surahs[0], {
+            "number": 1,
+            "name_arabic": "الفاتحة",
+            "name_english": "Al-Fatihah",
+            "ayahs": 7,
+        })
+        self.assertEqual(surahs[1]["number"], 2)
+        self.assertEqual(surahs[1]["ayahs"], 286)
+
+    @patch("services.quran_service.requests.get")
+    def test_list_surahs_hits_correct_upstream_url(self, mock_get):
+        mock_response = Mock()
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.return_value = self._build_chapters_response()
+        mock_get.return_value = mock_response
+
+        self.client.get("/surahs")
+
+        mock_get.assert_called_once_with(
+            "https://api.quran.com/api/v4/chapters",
+            params={},
+            timeout=15,
+        )
+
+    @patch("services.quran_service.requests.get")
+    def test_list_surahs_upstream_failure_returns_502(self, mock_get):
+        mock_get.side_effect = requests.RequestException("connection failed")
+
+        response = self.client.get("/surahs")
+
+        self.assertEqual(response.status_code, 502)
+        self.assertEqual(response.json()["detail"], "Failed to fetch surah list from upstream Quran API")
+
+    @patch("services.quran_service.requests.get")
+    def test_list_surahs_upstream_http_error_returns_502(self, mock_get):
+        mock_response = Mock(status_code=500)
+        mock_response.json.return_value = {"status": 500, "message": "Upstream error"}
+        mock_response.raise_for_status.side_effect = requests.HTTPError(response=mock_response)
+        mock_get.return_value = mock_response
+
+        response = self.client.get("/surahs")
+
+        self.assertEqual(response.status_code, 502)
+        self.assertEqual(response.json()["detail"], "Upstream error")
+
+
 if __name__ == "__main__":
     unittest.main()

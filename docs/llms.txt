@@ -16,6 +16,10 @@ Available endpoints
    - Returns raw chapter tafseer data from Quran.com.
    - Use this when you need source tafseer content by chapter without chat or model generation.
 
+3. GET /surahs
+   - Returns a list of all 114 Surahs (chapters) with their metadata (number, names, ayah count).
+   - Use this to populate a Surah selection menu or index.
+
 How to use /chat correctly
 - Resolve the verse in your client or workflow before calling the API.
 - Do not ask the backend to guess the verse from free-form user prose.
